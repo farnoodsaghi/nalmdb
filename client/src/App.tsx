@@ -1,12 +1,20 @@
 import React from "react";
-import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Home, Error, Signup, Login } from "./pages/index";
 
-function App() {
+interface AppProps {}
+
+const App: React.FC<AppProps> = ({}) => {
   return (
-    <div className="text-center">
-      <h1>Hello World</h1>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<Error />} />
+      </Routes>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;
