@@ -3,11 +3,12 @@
 @tailwind utilities;
 
 html {
-  overflow: hidden;
-  height: 100%;
+  /* overflow: hidden;
+  height: 100%; */
+  background-color: #111111;
 }
 
-body {
+/* body {
   overflow: auto;
   height: 100%;
-}
+} */
