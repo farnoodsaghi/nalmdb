@@ -2,5 +2,18 @@ import Loading from "./Loading";
 import SideBar from "./SideBar";
 import TopBar from "./TopBar";
 import Recommend from "./Recommend";
+import SlideShow from "./SlideShow";
+import MovieCard from "./MovieCard";
+import MovieSlider from "./MovieSlider";
+import MovieSliderBox from "./MovieSliderBox";
 
-export { Loading, SideBar, TopBar, Recommend };
+export {
+  Loading,
+  SideBar,
+  TopBar,
+  Recommend,
+  SlideShow,
+  MovieCard,
+  MovieSlider,
+  MovieSliderBox,
+};
