@@ -3,6 +3,8 @@ import React, { useState } from "react";
 interface AppContextProps {
   loading: boolean;
   query: string;
+  activeTopBar: number;
+  handleActiveTopBar: (id: number) => void;
 }
 
 const AppContext = React.createContext<AppContextProps | null>(null);
@@ -18,11 +20,27 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   //Search input state
   const [query, setQuery] = useState<string>("");
 
+  //Active TopBar Menu
+  const [activeTopBar, setActiveTopBar] = useState<number>(1);
+
+  const handleActiveTopBar = (id: number): void => {
+    setActiveTopBar(id);
+  };
+
   return (
-    <AppContext.Provider value={{ loading, query }}>
+    <AppContext.Provider
+      value={{ loading, query, activeTopBar, handleActiveTopBar }}
+    >
       {children}
     </AppContext.Provider>
   );
+};
+
+export const useGlobalContext = () => {
+  const context = React.useContext(AppContext);
+  if (context !== null) {
+    return context;
+  }
 };
 
 export { AppProvider, AppContext };
