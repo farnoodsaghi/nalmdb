@@ -1,14 +1,29 @@
 import React from "react";
 import { Icon } from "@iconify/react";
+import { AppContext } from "../context/context";
+import { TOP_BAR_ITEMS } from "../menuData";
 
 interface TopBarProps {}
 
 const TopBar: React.FC<TopBarProps> = ({}) => {
+  const { activeTopBar, handleActiveTopBar } = React.useContext(AppContext)!;
   return (
     <nav className="flex flex-row justify-between items-baseline w-19/30f h-24 font-sarabun bg-carbon-black text-light-grey ml-1/6f mr-1/5f fixed top-0 z-50">
       <div className="flex flex-row justify-between gap-8 text-xl font-light items-start h-full mt-8 ml-8">
-        <h2 className="hover:text-white cursor-pointer">Movies</h2>
-        <h2 className="hover:text-white cursor-pointer">TV Shows</h2>
+        {TOP_BAR_ITEMS.map((item) => {
+          const { id, name } = item;
+          return (
+            <h2
+              key={id}
+              onClick={() => handleActiveTopBar(id)}
+              className={`hover:text-white cursor-pointer ${
+                activeTopBar === id && "text-white"
+              }`}
+            >
+              {name}
+            </h2>
+          );
+        })}
       </div>
       <div className="flex flex-row justify-between items-center bg-off-black text-light-grey rounded-md mr-8">
         <form>
