@@ -1,7 +1,7 @@
 import React from "react";
 import { Icon } from "@iconify/react";
 import { AppContext } from "../context/context";
-import { TOP_BAR_ITEMS } from "../menuData";
+import { TOP_BAR_ITEMS } from "../utils/constants";
 
 interface TopBarProps {}
 
