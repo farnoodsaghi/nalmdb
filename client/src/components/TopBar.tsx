@@ -1,15 +1,16 @@
 import React from "react";
-import { Icon } from "@iconify/react";
-import { AppContext } from "../context/context";
+import { MoviesContext } from "../context/moviesContext";
 import { TOP_BAR_ITEMS } from "../utils/constants";
+import Search from "./Search";
 
 interface TopBarProps {}
 
 const TopBar: React.FC<TopBarProps> = ({}) => {
-  const { activeTopBar, handleActiveTopBar } = React.useContext(AppContext)!;
+  const { active_topbar, handleActiveTopBar } =
+    React.useContext(MoviesContext)!;
   return (
-    <nav className="flex flex-row justify-between items-baseline w-19/30f h-24 font-sarabun bg-carbon-black text-light-grey ml-1/6f mr-1/5f fixed top-0 z-50">
-      <div className="flex flex-row justify-between gap-8 text-xl font-light items-start h-full mt-8 ml-8">
+    <nav className="flex flex-row justify-between items-baseline w-5/6 h-24 font-sarabun bg-carbon-black text-light-grey ml-1/6f fixed top-0 z-50">
+      <div className="flex flex-row justify-between gap-8 text-xl font-light items-start h-full mt-8 ml-12">
         {TOP_BAR_ITEMS.map((item) => {
           const { id, name } = item;
           return (
@@ -17,7 +18,7 @@ const TopBar: React.FC<TopBarProps> = ({}) => {
               key={id}
               onClick={() => handleActiveTopBar(id)}
               className={`hover:text-white cursor-pointer ${
-                activeTopBar === id && "text-white"
+                active_topbar === id && "text-white"
               }`}
             >
               {name}
@@ -25,16 +26,7 @@ const TopBar: React.FC<TopBarProps> = ({}) => {
           );
         })}
       </div>
-      <div className="flex flex-row justify-between items-center bg-off-black text-light-grey rounded-md mr-8">
-        <form>
-          <input
-            type="text"
-            placeholder="Search"
-            className="bg-transparent p-3 border-none outline-none placeholder:text-lg placeholder:text-light-grey"
-          />
-        </form>
-        <Icon icon="eva:search-fill" className="w-6 h-6 self-center mr-3" />
-      </div>
+      <Search />
     </nav>
   );
 };

@@ -35,11 +35,11 @@ const MovieSlider: React.FC<MovieSliderProps> = ({}) => {
     <div className="flex w-full relative mt-4 mx-auto group">
       <button
         onClick={scrollLeft}
-        className="invisible group-hover:visible bg-light-grey text-white rounded-full w-8 h-8 absolute -left-4 z-10 hover:scale-110 self-center drop-shadow-lg"
+        className="invisible group-hover:visible bg-light-grey text-white rounded-full w-10 h-10 absolute -left-4 z-10 hover:scale-110 self-center drop-shadow-lg"
       >
         <Icon
           icon="akar-icons:chevron-left"
-          className="w-4 h-4 text-white m-auto"
+          className="w-5 h-5 text-white m-auto"
         />
       </button>
       <div
@@ -64,11 +64,11 @@ const MovieSlider: React.FC<MovieSliderProps> = ({}) => {
       </div>
       <button
         onClick={scrollRight}
-        className="invisible group-hover:visible bg-light-grey text-white rounded-full w-8 h-8 absolute -right-4 z-10 hover:scale-110 self-center drop-shadow-lg"
+        className="invisible group-hover:visible bg-light-grey text-white rounded-full w-10 h-10 absolute -right-4 z-10 hover:scale-110 self-center drop-shadow-lg"
       >
         <Icon
           icon="akar-icons:chevron-right"
-          className="w-4 h-4 text-white m-auto"
+          className="w-5 h-5 text-white m-auto"
         />
       </button>
     </div>
