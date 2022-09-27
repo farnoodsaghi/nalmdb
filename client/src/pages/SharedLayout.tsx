@@ -10,7 +10,7 @@ const SharedLayout: React.FC<SharedLayoutProps> = ({}) => {
       <header className="flex flex-row justify-start">
         <SideBar />
         <TopBar />
-        <Recommend />
+        {/* <Recommend /> */}
       </header>
       <Outlet />
     </>
