@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import { AppProvider } from "./context/context";
+import { MoviesProvider } from "./context/moviesContext";
 import "./index.css";
 
 const root = ReactDOM.createRoot(
@@ -9,8 +9,8 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <AppProvider>
+    <MoviesProvider>
       <App />
-    </AppProvider>
+    </MoviesProvider>
   </React.StrictMode>
 );
