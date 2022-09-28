@@ -2,9 +2,11 @@ import React, { useRef } from "react";
 import MovieCard from "./MovieCard";
 import { Icon } from "@iconify/react";
 
-interface MovieSliderProps {}
+interface MovieSliderProps {
+  contentList: any[];
+}
 
-const MovieSlider: React.FC<MovieSliderProps> = ({}) => {
+const MovieSlider: React.FC<MovieSliderProps> = ({ contentList }) => {
   const sliderRef = useRef<HTMLInputElement>(null);
 
   const scrollLeft = (): void => {
@@ -44,23 +46,11 @@ const MovieSlider: React.FC<MovieSliderProps> = ({}) => {
       </button>
       <div
         ref={sliderRef}
-        className="grid grid-flow-col xl:auto-cols-[calc(20%-0.6rem)] lg:auto-cols-[calc(25%-0.5625rem)] md:auto-cols-[calc(33.33%-0.5rem)] sm:auto-cols-[calc(50%-0.375rem)] auto-rows-[minmax(min-content,6rem)] width-full gap-3 overflow-auto no-scrollbar relative scroll-smooth snap-x"
+        className="grid grid-flow-col xl:auto-cols-7p lg:auto-cols-6p md:auto-cols-5p sm:auto-cols-4p auto-rows-[minmax(min-content,6rem)] width-full gap-6 overflow-auto no-scrollbar relative scroll-smooth snap-x"
       >
-        <MovieCard />
-        <MovieCard />
-        <MovieCard />
-        <MovieCard />
-        <MovieCard />
-        <MovieCard />
-        <MovieCard />
-        <MovieCard />
-        <MovieCard />
-        <MovieCard />
-        <MovieCard />
-        <MovieCard />
-        <MovieCard />
-        <MovieCard />
-        <MovieCard />
+        {contentList.map((title) => {
+          return <MovieCard key={title.id} {...title} />;
+        })}
       </div>
       <button
         onClick={scrollRight}
