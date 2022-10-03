@@ -40,7 +40,7 @@ const SideBar: React.FC<SideBarProps> = ({}) => {
           <h3>Reviews</h3>
         </span>
         <span className="flex flex-row justify-start items-end gap-2 ml-8 mt-2 font-sarabun font-lg font-normal text-light-grey leading-tight hover:text-white cursor-pointer">
-          <Icon icon="heroicons:bookmark" className="w-5 h-5" />
+          <Icon icon="heroicons:bookmark-solid" className="w-5 h-5" />
           <h3>Watchlist</h3>
         </span>
       </div>
