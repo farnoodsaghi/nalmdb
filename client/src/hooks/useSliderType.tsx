@@ -21,9 +21,15 @@ const useSliderType = (type: string): Config | undefined => {
     comedy_list,
     comedy_loading,
     comedy_error,
+    crime_list,
+    crime_loading,
+    crime_error,
     drama_list,
     drama_loading,
     drama_error,
+    scifi_list,
+    scifi_loading,
+    scifi_error,
   } = React.useContext(MoviesContext)!;
 
   if (type === "trending") {
@@ -54,11 +60,25 @@ const useSliderType = (type: string): Config | undefined => {
       titleList: comedy_list,
     };
   }
+  if (type === "crime") {
+    return {
+      loading: crime_loading,
+      error: crime_error,
+      titleList: crime_list,
+    };
+  }
   if (type === "drama") {
     return {
       loading: drama_loading,
       error: drama_error,
       titleList: drama_list,
+    };
+  }
+  if (type === "scifi") {
+    return {
+      loading: scifi_loading,
+      error: scifi_error,
+      titleList: scifi_list,
     };
   }
 };
