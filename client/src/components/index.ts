@@ -6,6 +6,8 @@ import SlideShow from "./SlideShow";
 import MovieCard from "./MovieCard";
 import MovieSlider from "./MovieSlider";
 import MovieSliderBox from "./MovieSliderBox";
+import CartListItem from "./CastListItem";
+import GenreTag from "./GenreTag";
 
 export {
   Loading,
@@ -16,4 +18,6 @@ export {
   MovieCard,
   MovieSlider,
   MovieSliderBox,
+  CartListItem,
+  GenreTag,
 };
