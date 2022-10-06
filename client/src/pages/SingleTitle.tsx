@@ -3,13 +3,41 @@ import { useParams } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { CartListItem, GenreTag, Loading } from "../components";
 import { MoviesContext } from "../context/moviesContext";
+import { formatMovieYear, formatTVYear, formatTime } from "../utils/helpers";
 
 interface SingleTitleProps {}
 
 const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
   let { id } = useParams();
-  const { single_title_loading, handleTitleId } =
-    React.useContext(MoviesContext)!;
+  const {
+    single_title_loading,
+    single_title_error,
+    single_title,
+    cast_loading,
+    cast_list,
+    cast_error,
+    handleTitleId,
+  } = React.useContext(MoviesContext)!;
+
+  const {
+    backdrop_path,
+    poster_path,
+    original_title,
+    title,
+    original_name,
+    name,
+    overview,
+    genres,
+    runtime,
+    production_countries,
+    last_episode_to_air,
+    first_air_date,
+    last_air_date,
+    release_date,
+    status,
+    number_of_seasons,
+    number_of_episodes,
+  } = single_title!;
 
   useEffect(() => {
     handleTitleId(id!);
@@ -24,8 +52,8 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
       <div className="flex w-full aspect-[21/9] object-cover">
         <img
           className="aspect-[21/9] object-cover"
-          src="https://m.media-amazon.com/images/M/MV5BZmI2MzU3NmMtNGVmMS00YzczLWIzMGQtNDU0MjcyNTYzODEyXkEyXkFqcGdeQWxiaWFtb250._V1_.jpg"
-          alt="backdrop"
+          src={`https://image.tmdb.org/t/p/original/${backdrop_path}`}
+          alt={title || name}
         />
         <div className="bottom-fade w-full h-36 absolute bottom-0">
           <div className="flex flex-row gap-16 mx-16 justify-start">
@@ -33,24 +61,40 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
               <div className="flex justify-center w-[18rem] items-center bg-dark-grey rounded-md cursor-pointer hover:brightness-75 aspect-[1/1.5]">
                 <img
                   className="aspect-[1/1.5] rounded-md"
-                  src="https://www.themoviedb.org/t/p/w1280/reEMJA1uzscCbkpeRJeTT2bjqUp.jpg"
-                  alt="poster"
+                  src={`https://image.tmdb.org/t/p/original/${poster_path}`}
+                  alt={title || name}
                 />
               </div>
             </div>
             <div className="flex flex-col gap-1.5 w-1/2 justify-start items-start mt-14">
               <h2 className="text-5xl font-semibold font-sarabun text-white">
-                Money Heist
+                {title || name}
               </h2>
               <p className="text-normal font-light font-sarabun text-light-grey">
-                Original title: La Casa De Papel
+                Original Title: {original_title || original_name}
               </p>
               <p className="text-normal font-light font-sarabun text-white mt-2">
-                <span>Series (2017-2021)</span>
-                <span className="mx-3">•</span>
-                <span>5 Seasons</span>
-                <span className="mx-3">•</span>
-                <span>48 Episodes</span>
+                {status === "Released" ? (
+                  <>
+                    <span>{String(formatMovieYear(release_date))}</span>
+                    <span className="mx-3">•</span>
+                    <span>{String(formatTime(runtime!))}</span>
+                  </>
+                ) : (
+                  <>
+                    <span>
+                      {`Series ${
+                        status === "Ended"
+                          ? formatTVYear(first_air_date!, last_air_date!)
+                          : formatTVYear(first_air_date!)
+                      }`}
+                    </span>
+                    <span className="mx-3">•</span>
+                    <span>{number_of_seasons} Seasons</span>
+                    <span className="mx-3">•</span>
+                    <span>{number_of_episodes} Episodes</span>
+                  </>
+                )}
               </p>
               <div className="flex flex-row items-center gap-3 my-6">
                 <button className="flex justify-center items-center rounded-full w-36 h-12 text-normal font-normal font-sarabun text-white bg-royal-purple">
@@ -70,15 +114,7 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
                 </button>
               </div>
               <p className="text-normal font-light font-sarabun text-light-grey">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Corrupti possimus at dignissimos nihil quas nobis quia vitae,
-                eos autem labore, aperiam recusandae exercitationem nisi quasi
-                earum alias distinctio officia molestias, eligendi hic excepturi
-                explicabo omnis! Dignissimos consequuntur, debitis vero
-                excepturi eveniet in corrupti tempore repellendus dolor
-                asperiores sunt perferendis blanditiis. Quas molestiae
-                blanditiis exercitationem qui deserunt esse culpa beatae est
-                quam odio sint atque numquam, accusantium dolorum.
+                {overview}
               </p>
               <div className="flex flex-col mt-8 gap-2 w-full">
                 <h4 className="text-2xl font-semibold font-sarabun text-white">
@@ -93,10 +129,12 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
                         </p>
                       </div>
                       <div className="flex flex-row justify-start items-center gap-1.5 w-3/4 ml-4">
-                        <GenreTag label="Action" />
-                        <GenreTag label="Crime" />
-                        <GenreTag label="Drama" />
-                        <GenreTag label="Thriller" />
+                        {genres &&
+                          genres.map((genre) => {
+                            return (
+                              <GenreTag key={genre.id} label={genre.name} />
+                            );
+                          })}
                       </div>
                     </div>
                     <div className="flex justify-start items-center h-px w-full bg-darker-grey" />
@@ -109,9 +147,17 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
                         </p>
                       </div>
                       <div className="flex flex-row justify-start items-center gap-1.5 w-3/4 ml-4">
-                        <p className="text-normal font-light font-sarabun text-light-grey">
-                          Spain
-                        </p>
+                        {production_countries &&
+                          production_countries.map((country, index) => {
+                            return (
+                              <p
+                                key={index}
+                                className="text-normal font-light font-sarabun text-light-grey"
+                              >
+                                {country.name}
+                              </p>
+                            );
+                          })}
                       </div>
                     </div>
                     <div className="flex justify-start items-center h-px w-full bg-darker-grey" />
@@ -125,7 +171,7 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
                       </div>
                       <div className="flex flex-row justify-start items-center gap-1.5 w-3/4 ml-4">
                         <p className="text-normal font-light font-sarabun text-light-grey">
-                          50 min
+                          {runtime || last_episode_to_air?.runtime} min
                         </p>
                       </div>
                     </div>
@@ -134,17 +180,14 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col justify-start items-start w-1/4 mt-14">
+            <div className="flex flex-col justify-start items-start w-1/4 mt-14 mr-16 overflow-hidden">
               <h4 className="text-2xl font-semibold font-sarabun text-white">
                 Cast and Crew
               </h4>
               <div className="flex flex-col gap-4 mt-8">
-                <CartListItem />
-                <CartListItem />
-                <CartListItem />
-                <CartListItem />
-                <CartListItem />
-                <CartListItem />
+                {cast_list.map((actor: any) => {
+                  return <CartListItem key={actor.id} {...actor} />;
+                })}
               </div>
             </div>
           </div>

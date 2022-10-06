@@ -32,6 +32,9 @@ import {
   GET_SINGLE_TITLE_START,
   GET_SINGLE_TITLE_SUCCESS,
   GET_SINGLE_TITLE_ERROR,
+  GET_CAST_START,
+  GET_CAST_SUCCESS,
+  GET_CAST_ERROR,
 } from "../actions";
 
 interface Action {
@@ -78,9 +81,52 @@ export interface State {
   single_title_loading: boolean;
   single_title: Movie;
   single_title_error: boolean;
+  cast_loading: boolean;
+  cast_list: Cast[];
+  cast_error: boolean;
 }
 
-interface Movie {}
+interface Movie {
+  id: number;
+  backdrop_path: string;
+  poster_path: string;
+  original_title?: string;
+  title?: string;
+  original_name?: string;
+  name?: string;
+  overview: string;
+  genres: Genres[];
+  runtime: number;
+  production_countries: ProductionCountries[];
+  last_episode_to_air?: LastEpisodeToAir;
+  first_air_date?: string;
+  last_air_date?: string;
+  release_date: string;
+  status: string;
+  number_of_seasons?: number;
+  number_of_episodes?: number;
+}
+
+interface ProductionCountries {
+  iso_3166_1: string;
+  name: string;
+}
+
+interface Genres {
+  id: number;
+  name: string;
+}
+
+interface LastEpisodeToAir {
+  runtime: number;
+}
+
+interface Cast {
+  id: number;
+  name: string;
+  character: string;
+  profile_path: string;
+}
 
 const reducer = (state: State, action: Action) => {
   if (action.type === SET_ACTIVE_TOPBAR) {
@@ -224,6 +270,20 @@ const reducer = (state: State, action: Action) => {
   }
   if (action.type === GET_SINGLE_TITLE_ERROR) {
     return { ...state, single_title_loading: false, single_title_error: true };
+  }
+
+  if (action.type === GET_CAST_START) {
+    return { ...state, cast_loading: true };
+  }
+  if (action.type === GET_CAST_SUCCESS) {
+    return {
+      ...state,
+      cast_loading: false,
+      cast_list: action.payload,
+    };
+  }
+  if (action.type === GET_CAST_ERROR) {
+    return { ...state, cast_loading: false, cast_error: true };
   }
 
   throw Error("Invalid action type");

@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer } from "react";
 import reducer, { State } from "../reducers/moviesReducer";
-import { getSingleTitleEndpoint } from "../utils/helpers";
+import { getSingleTitleEndpoint, getCastEndpoint } from "../utils/helpers";
 import {
   GET_MOVIES_START,
   GET_MOVIES_SUCCESS,
@@ -35,6 +35,9 @@ import {
   GET_SINGLE_TITLE_START,
   GET_SINGLE_TITLE_SUCCESS,
   GET_SINGLE_TITLE_ERROR,
+  GET_CAST_START,
+  GET_CAST_SUCCESS,
+  GET_CAST_ERROR,
 } from "../actions";
 import axios from "../axios";
 import requests from "../requests";
@@ -85,6 +88,9 @@ const initialState = {
   single_title_loading: false,
   single_title: {},
   single_title_error: false,
+  cast_loading: false,
+  cast_list: [],
+  cast_error: false,
 };
 
 const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
@@ -271,6 +277,26 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
     }
   };
 
+  const fetchSingleTitleCast = async (id: string) => {
+    dispatch({ type: GET_CAST_START });
+    try {
+      let response = null;
+      const { fetchMovieCast, fetchTVCast } = getCastEndpoint(id);
+      if (state.active_topbar === 1) {
+        response = await axios.get(fetchMovieCast);
+      } else if (state.active_topbar === 2) {
+        response = await axios.get(fetchTVCast);
+      }
+      dispatch({
+        type: GET_CAST_SUCCESS,
+        payload: response!.data.cast,
+      });
+    } catch (error) {
+      console.log(error);
+      dispatch({ type: GET_CAST_ERROR });
+    }
+  };
+
   useEffect(() => {
     fetchLatest();
     fetchTrending();
@@ -285,6 +311,7 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
   useEffect(() => {
     if (state.title_id) {
       fetchSingleTitle(state.title_id);
+      fetchSingleTitleCast(state.title_id);
     }
   }, [state.title_id]);
 
