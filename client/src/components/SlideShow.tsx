@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { MoviesContext } from "../context/moviesContext";
+import { Link } from "react-router-dom";
 
 interface SlideShowProps {}
 
@@ -65,12 +66,15 @@ const SlideShow: React.FC<SlideShowProps> = ({}) => {
       <div className="flex flex-row transition-transform" ref={slideShowRef}>
         {latest_list.map((movie, index) => {
           return (
-            <img
-              key={index}
-              src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
-              alt=""
-              className="w-full h-full aspect-[21/9] object-cover rounded-md"
-            />
+            <div key={index} className="flex min-w-full min-h-full">
+              <Link to={`/title/${movie.id}`}>
+                <img
+                  src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
+                  alt=""
+                  className="w-full h-full aspect-[21/9] object-cover rounded-md"
+                />
+              </Link>
+            </div>
           );
         })}
       </div>
