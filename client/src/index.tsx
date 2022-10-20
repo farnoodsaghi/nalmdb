@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { MoviesProvider } from "./context/moviesContext";
+import { UserProvider } from "./context/userContext";
 import "./index.css";
 
 const root = ReactDOM.createRoot(
@@ -10,7 +11,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <MoviesProvider>
-      <App />
+      <UserProvider>
+        <App />
+      </UserProvider>
     </MoviesProvider>
   </React.StrictMode>
 );
