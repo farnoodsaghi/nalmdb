@@ -1,11 +1,15 @@
 import React from "react";
-import { SlideShow, MovieSliderBox } from "../components";
+import { SlideShow, MovieSliderBox, SearchResults } from "../components";
 import { MoviesContext } from "../context/moviesContext";
 
 interface HomeProps {}
 
 const Home: React.FC<HomeProps> = ({}) => {
-  const { active_topbar } = React.useContext(MoviesContext)!;
+  const { active_topbar, search_input } = React.useContext(MoviesContext)!;
+
+  if (search_input) {
+    return <SearchResults />;
+  }
   return (
     <main className="block bg-carbon-black ml-1/6f h-full w-5/6 mt-24 mb-6">
       <SlideShow />
