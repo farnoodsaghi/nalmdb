@@ -3,8 +3,10 @@ import {
   GET_MOVIES_SUCCESS,
   GET_MOVIES_ERROR,
   SET_ACTIVE_TOPBAR,
+  SET_ACTIVE_SIDEBAR,
   SET_SEARCH_INPUT,
   SET_TITLE_ID,
+  SET_MEDIA_TYPE,
   GET_LATEST_START,
   GET_LATEST_SUCCESS,
   GET_LATEST_ERROR,
@@ -35,6 +37,11 @@ import {
   GET_CAST_START,
   GET_CAST_SUCCESS,
   GET_CAST_ERROR,
+  GET_SEARCH_RESULTS_START,
+  GET_SEARCH_RESULTS_SUCCESS,
+  GET_SEARCH_RESULTS_ERROR,
+  SET_CURRENT_SORT,
+  SET_CURRENT_GENRE,
 } from "../actions";
 
 interface Action {
@@ -45,6 +52,7 @@ interface Action {
 interface Title {
   backdrop_path?: string;
   poster_path?: string;
+  media_type?: string;
 }
 
 export interface State {
@@ -53,7 +61,11 @@ export interface State {
   movies_error: boolean;
   search_input: string;
   active_topbar: number;
+  active_sidebar: number;
+  current_sort: number;
+  current_genre: number;
   title_id: string;
+  title_media_type: null | string;
   latest_loading: boolean;
   latest_list: any[];
   latest_error: boolean;
@@ -84,6 +96,9 @@ export interface State {
   cast_loading: boolean;
   cast_list: Cast[];
   cast_error: boolean;
+  search_loading: boolean;
+  search_list: any[];
+  search_error: boolean;
 }
 
 interface Movie {
@@ -131,6 +146,9 @@ interface Cast {
 const reducer = (state: State, action: Action) => {
   if (action.type === SET_ACTIVE_TOPBAR) {
     return { ...state, active_topbar: action.payload };
+  }
+  if (action.type === SET_ACTIVE_SIDEBAR) {
+    return { ...state, active_sidebar: action.payload };
   }
   if (action.type === SET_SEARCH_INPUT) {
     return { ...state, search_input: action.payload };
@@ -259,7 +277,7 @@ const reducer = (state: State, action: Action) => {
     return { ...state, scifi_loading: false, scifi_error: true };
   }
   if (action.type === GET_SINGLE_TITLE_START) {
-    return { ...state, top_rated_loading: true };
+    return { ...state, single_title_loading: true };
   }
   if (action.type === GET_SINGLE_TITLE_SUCCESS) {
     return {
@@ -284,6 +302,33 @@ const reducer = (state: State, action: Action) => {
   }
   if (action.type === GET_CAST_ERROR) {
     return { ...state, cast_loading: false, cast_error: true };
+  }
+  if (action.type === GET_SEARCH_RESULTS_START) {
+    return { ...state, search_loading: true };
+  }
+  if (action.type === GET_SEARCH_RESULTS_SUCCESS) {
+    return {
+      ...state,
+      search_loading: false,
+      search_list: action.payload.filter((title: Title) => {
+        return (
+          (title.media_type === "movie" || title.media_type === "tv") &&
+          title.poster_path !== null
+        );
+      }),
+    };
+  }
+  if (action.type === GET_SEARCH_RESULTS_ERROR) {
+    return { ...state, search_loading: false, search_error: true };
+  }
+  if (action.type === SET_MEDIA_TYPE) {
+    return { ...state, title_media_type: action.payload };
+  }
+  if (action.type === SET_CURRENT_SORT) {
+    return { ...state, current_sort: action.payload };
+  }
+  if (action.type === SET_CURRENT_GENRE) {
+    return { ...state, current_genre: action.payload };
   }
 
   throw Error("Invalid action type");
