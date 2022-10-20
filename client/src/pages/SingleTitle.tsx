@@ -1,9 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { CartListItem, GenreTag, Loading } from "../components";
 import { MoviesContext } from "../context/moviesContext";
-import { formatMovieYear, formatTVYear, formatTime } from "../utils/helpers";
+import {
+  formatMovieYear,
+  formatTVYear,
+  formatTime,
+  areObjectsEqual,
+  isEqual,
+} from "../utils/helpers";
+import { UserContext } from "../context/userContext";
 
 interface SingleTitleProps {}
 
@@ -18,6 +25,9 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
     cast_error,
     handleTitleId,
   } = React.useContext(MoviesContext)!;
+
+  const { user_watch_list, addToWatchlist, removeFromWatchList } =
+    React.useContext(UserContext)!;
 
   const {
     backdrop_path,
@@ -39,9 +49,28 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
     number_of_episodes,
   } = single_title!;
 
+  const [castList, setCastList] = useState<any[]>([]);
+  const [isCastExtended, setIsCastExtended] = useState<boolean>(false);
+
+  const toggleSeeMoreCast = () => {
+    setIsCastExtended((prev) => !prev);
+  };
+
   useEffect(() => {
     handleTitleId(id!);
   }, [id]);
+
+  useEffect(() => {
+    setCastList(cast_list.slice(0, 5));
+  }, [cast_list]);
+
+  useEffect(() => {
+    if (isCastExtended) {
+      setCastList(cast_list);
+    } else {
+      setCastList(cast_list.slice(0, 5));
+    }
+  }, [isCastExtended]);
 
   if (single_title_loading) {
     return <Loading />;
@@ -100,13 +129,35 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
                 <button className="flex justify-center items-center rounded-full w-36 h-12 text-normal font-normal font-sarabun text-white bg-royal-purple">
                   Write Review
                 </button>
-                <button className="flex justify-center items-center rounded-full w-12 h-12 text-white bg-transparent border-[1px] border-white">
-                  <Icon
-                    icon="eva:plus-fill"
-                    className="w-6 h-6 text-white m-auto"
-                  />
+                <button
+                  onClick={() => {
+                    user_watch_list.some((title) => {
+                      return (
+                        JSON.stringify(title) === JSON.stringify(single_title)
+                      );
+                    })
+                      ? removeFromWatchList(single_title)
+                      : addToWatchlist(single_title);
+                  }}
+                  className="flex justify-center items-center rounded-full w-12 h-12 text-white bg-transparent border-[1px] border-light-grey hover:backdrop-brightness-200 hover:border-white"
+                >
+                  {user_watch_list.some((title) => {
+                    return (
+                      JSON.stringify(title) === JSON.stringify(single_title)
+                    );
+                  }) ? (
+                    <Icon
+                      icon="charm:tick"
+                      className="w-6 h-6 text-white m-auto"
+                    />
+                  ) : (
+                    <Icon
+                      icon="eva:plus-fill"
+                      className="w-6 h-6 text-white m-auto"
+                    />
+                  )}
                 </button>
-                <button className="flex justify-center items-center rounded-full w-12 h-12 text-white bg-transparent border-[1px] border-white">
+                <button className="flex justify-center items-center rounded-full w-12 h-12 text-white bg-transparent border-[1px] border-light-grey hover:backdrop-brightness-200 hover:border-white">
                   <Icon
                     icon="ion:play-outline"
                     className="w-6 h-6 text-white m-auto"
@@ -185,10 +236,27 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
                 Cast and Crew
               </h4>
               <div className="flex flex-col gap-4 mt-8">
-                {cast_list.map((actor: any) => {
+                {castList.map((actor: any) => {
                   return <CartListItem key={actor.id} {...actor} />;
                 })}
               </div>
+              <button
+                onClick={toggleSeeMoreCast}
+                className="flex justify-start items-center gap-2 bg-transparent text-indigo-400 text-normal font-medium font-sarabun mt-6"
+              >
+                {isCastExtended ? "Show less" : "Show all"}
+                {isCastExtended ? (
+                  <Icon
+                    icon="akar-icons:circle-chevron-left"
+                    className="w-5 h-5 text-indigo-400 m-auto"
+                  />
+                ) : (
+                  <Icon
+                    icon="akar-icons:circle-chevron-right"
+                    className="w-5 h-5 text-indigo-400 m-auto"
+                  />
+                )}
+              </button>
             </div>
           </div>
         </div>
