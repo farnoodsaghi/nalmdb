@@ -10,7 +10,7 @@ const TopBar: React.FC<TopBarProps> = ({}) => {
     React.useContext(MoviesContext)!;
   return (
     <nav className="flex flex-row justify-between items-baseline w-5/6 h-24 font-sarabun bg-carbon-black text-light-grey ml-1/6f fixed top-0 z-50">
-      <div className="flex flex-row justify-between gap-8 text-xl font-light items-start h-full mt-8 ml-12">
+      <div className="flex flex-row justify-between gap-8 text-xl font-light items-start mt-8 ml-12">
         {TOP_BAR_ITEMS.map((item) => {
           const { id, name } = item;
           return (
