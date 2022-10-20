@@ -8,6 +8,10 @@ import MovieSlider from "./MovieSlider";
 import MovieSliderBox from "./MovieSliderBox";
 import CartListItem from "./CastListItem";
 import GenreTag from "./GenreTag";
+import SideBarListItem from "./SideBarListItem";
+import SearchResults from "./SearchResults";
+import MovieGridList from "./MovieGridList";
+import Submenu from "./Submenu";
 
 export {
   Loading,
@@ -20,4 +24,8 @@ export {
   MovieSliderBox,
   CartListItem,
   GenreTag,
+  SideBarListItem,
+  SearchResults,
+  MovieGridList,
+  Submenu,
 };
