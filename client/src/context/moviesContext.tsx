@@ -6,8 +6,10 @@ import {
   GET_MOVIES_SUCCESS,
   GET_MOVIES_ERROR,
   SET_ACTIVE_TOPBAR,
+  SET_ACTIVE_SIDEBAR,
   SET_SEARCH_INPUT,
   SET_TITLE_ID,
+  SET_MEDIA_TYPE,
   GET_LATEST_START,
   GET_LATEST_SUCCESS,
   GET_LATEST_ERROR,
@@ -38,14 +40,23 @@ import {
   GET_CAST_START,
   GET_CAST_SUCCESS,
   GET_CAST_ERROR,
+  GET_SEARCH_RESULTS_START,
+  GET_SEARCH_RESULTS_SUCCESS,
+  GET_SEARCH_RESULTS_ERROR,
+  SET_CURRENT_SORT,
+  SET_CURRENT_GENRE,
 } from "../actions";
 import axios from "../axios";
 import requests from "../requests";
 
 interface MoviesContextProps extends State {
   handleActiveTopBar: (id: number) => void;
+  handleActiveSideBar: (id: number) => void;
   handleSearch: (value: string) => void;
   handleTitleId: (id: string) => void;
+  handleMediaType: (type: null | string) => void;
+  handleCurrentSort: (id: number) => void;
+  handleCurrentGenre: (id: number) => void;
 }
 
 const MoviesContext = React.createContext<MoviesContextProps | null>(null);
@@ -60,7 +71,11 @@ const initialState = {
   movies_error: false,
   search_input: "",
   active_topbar: 1,
+  active_sidebar: 1,
+  current_sort: 1,
+  current_genre: 1,
   title_id: "",
+  title_media_type: null,
   latest_loading: false,
   latest_list: [],
   latest_error: false,
@@ -91,6 +106,9 @@ const initialState = {
   cast_loading: false,
   cast_list: [],
   cast_error: false,
+  search_loading: false,
+  search_list: [],
+  search_error: false,
 };
 
 const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
@@ -100,12 +118,24 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
     dispatch({ type: SET_ACTIVE_TOPBAR, payload: id });
   };
 
+  const handleActiveSideBar = (id: number) => {
+    dispatch({ type: SET_ACTIVE_SIDEBAR, payload: id });
+  };
+
   const handleSearch = (value: string): void => {
     dispatch({ type: SET_SEARCH_INPUT, payload: value });
   };
 
   const handleTitleId = (id: string): void => {
     dispatch({ type: SET_TITLE_ID, payload: id });
+  };
+
+  const handleCurrentSort = (id: number): void => {
+    dispatch({ type: SET_CURRENT_SORT, payload: id });
+  };
+
+  const handleCurrentGenre = (id: number): void => {
+    dispatch({ type: SET_CURRENT_GENRE, payload: id });
   };
 
   const fetchLatest = async (): Promise<void> => {
@@ -262,9 +292,15 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
     try {
       let response = null;
       const { fetchSingleMovie, fetchSingleTV } = getSingleTitleEndpoint(id);
-      if (state.active_topbar === 1) {
+      if (
+        state.title_media_type === "movie" ||
+        (!state.title_media_type && state.active_topbar === 1)
+      ) {
         response = await axios.get(fetchSingleMovie);
-      } else if (state.active_topbar === 2) {
+      } else if (
+        state.title_media_type === "tv" ||
+        (!state.title_media_type && state.active_topbar === 2)
+      ) {
         response = await axios.get(fetchSingleTV);
       }
       dispatch({
@@ -282,9 +318,15 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
     try {
       let response = null;
       const { fetchMovieCast, fetchTVCast } = getCastEndpoint(id);
-      if (state.active_topbar === 1) {
+      if (
+        state.title_media_type === "movie" ||
+        (!state.title_media_type && state.active_topbar === 1)
+      ) {
         response = await axios.get(fetchMovieCast);
-      } else if (state.active_topbar === 2) {
+      } else if (
+        state.title_media_type === "tv" ||
+        (!state.title_media_type && state.active_topbar === 2)
+      ) {
         response = await axios.get(fetchTVCast);
       }
       dispatch({
@@ -295,6 +337,26 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
       console.log(error);
       dispatch({ type: GET_CAST_ERROR });
     }
+  };
+
+  const fetchSearchResults = async (query: string) => {
+    dispatch({ type: GET_SEARCH_RESULTS_START });
+    try {
+      const response = await axios.get(
+        `${requests.fetchSearchResults}${query}`
+      );
+      dispatch({
+        type: GET_SEARCH_RESULTS_SUCCESS,
+        payload: response!.data.results,
+      });
+    } catch (error) {
+      console.log(error);
+      dispatch({ type: GET_SEARCH_RESULTS_ERROR });
+    }
+  };
+
+  const handleMediaType = (type: null | string) => {
+    dispatch({ type: SET_MEDIA_TYPE, payload: type });
   };
 
   useEffect(() => {
@@ -315,9 +377,24 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
     }
   }, [state.title_id]);
 
+  useEffect(() => {
+    if (state.search_input) {
+      fetchSearchResults(state.search_input);
+    }
+  }, [state.search_input]);
+
   return (
     <MoviesContext.Provider
-      value={{ ...state, handleActiveTopBar, handleSearch, handleTitleId }}
+      value={{
+        ...state,
+        handleActiveTopBar,
+        handleActiveSideBar,
+        handleSearch,
+        handleTitleId,
+        handleMediaType,
+        handleCurrentSort,
+        handleCurrentGenre,
+      }}
     >
       {children}
     </MoviesContext.Provider>
