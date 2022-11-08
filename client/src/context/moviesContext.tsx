@@ -1,6 +1,11 @@
 import React, { useEffect, useReducer } from "react";
 import reducer, { State } from "../reducers/moviesReducer";
-import { getSingleTitleEndpoint, getCastEndpoint } from "../utils/helpers";
+import {
+  getSingleTitleEndpoint,
+  getCastEndpoint,
+  constructBrowseEndpoint,
+} from "../utils/helpers";
+import { SORT_VALUES, GENRE_VALUES } from "../utils/constants";
 import {
   GET_MOVIES_START,
   GET_MOVIES_SUCCESS,
@@ -45,6 +50,11 @@ import {
   GET_SEARCH_RESULTS_ERROR,
   SET_CURRENT_SORT,
   SET_CURRENT_GENRE,
+  GET_BROWSE_START,
+  GET_BROWSE_SUCCESS,
+  GET_BROWSE_ERROR,
+  SET_REVIEW_MODAL,
+  SET_REVIEW_FORM,
 } from "../actions";
 import axios from "../axios";
 import requests from "../requests";
@@ -57,6 +67,8 @@ interface MoviesContextProps extends State {
   handleMediaType: (type: null | string) => void;
   handleCurrentSort: (id: number) => void;
   handleCurrentGenre: (id: number) => void;
+  handleReviewModal: (isOpen: boolean) => void;
+  handleReviewForm: (target: any) => void;
 }
 
 const MoviesContext = React.createContext<MoviesContextProps | null>(null);
@@ -109,6 +121,11 @@ const initialState = {
   search_loading: false,
   search_list: [],
   search_error: false,
+  browse_loading: false,
+  browse_list: [],
+  browse_error: false,
+  review_model_open: false,
+  review_form: { title: "", content: "" },
 };
 
 const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
@@ -136,6 +153,15 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
 
   const handleCurrentGenre = (id: number): void => {
     dispatch({ type: SET_CURRENT_GENRE, payload: id });
+  };
+
+  const handleReviewModal = (isOpen: boolean): void => {
+    dispatch({ type: SET_REVIEW_MODAL, payload: isOpen });
+  };
+
+  const handleReviewForm = (target: any): void => {
+    const { name, value } = target;
+    dispatch({ type: SET_REVIEW_FORM, payload: { [name]: value } });
   };
 
   const fetchLatest = async (): Promise<void> => {
@@ -359,6 +385,30 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
     dispatch({ type: SET_MEDIA_TYPE, payload: type });
   };
 
+  const fetchBrowseList = async () => {
+    dispatch({ type: GET_BROWSE_START });
+    try {
+      const { movieId, tvId } = GENRE_VALUES.find(
+        (val: any) => val.id === state.current_genre
+      )!;
+      const mediaType = state.active_topbar === 1 ? "movie" : "tv";
+      const genreId = state.active_topbar === 1 ? movieId : tvId;
+      const queryString = SORT_VALUES.find(
+        (val: any) => val.id === state.current_sort
+      )!.value;
+
+      const response = await axios.get(
+        constructBrowseEndpoint(mediaType, genreId, queryString)
+      );
+      dispatch({
+        type: GET_BROWSE_SUCCESS,
+        payload: response!.data.results,
+      });
+    } catch (error) {
+      console.log(error);
+      dispatch({ type: GET_BROWSE_ERROR });
+    }
+  };
   useEffect(() => {
     fetchLatest();
     fetchTrending();
@@ -383,6 +433,10 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
     }
   }, [state.search_input]);
 
+  useEffect(() => {
+    fetchBrowseList();
+  }, [state.active_topbar, state.current_sort, state.current_genre]);
+
   return (
     <MoviesContext.Provider
       value={{
@@ -394,6 +448,8 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
         handleMediaType,
         handleCurrentSort,
         handleCurrentGenre,
+        handleReviewModal,
+        handleReviewForm,
       }}
     >
       {children}

@@ -42,6 +42,11 @@ import {
   GET_SEARCH_RESULTS_ERROR,
   SET_CURRENT_SORT,
   SET_CURRENT_GENRE,
+  GET_BROWSE_START,
+  GET_BROWSE_SUCCESS,
+  GET_BROWSE_ERROR,
+  SET_REVIEW_MODAL,
+  SET_REVIEW_FORM,
 } from "../actions";
 
 interface Action {
@@ -99,8 +104,17 @@ export interface State {
   search_loading: boolean;
   search_list: any[];
   search_error: boolean;
+  browse_loading: boolean;
+  browse_list: any[];
+  browse_error: boolean;
+  review_model_open: boolean;
+  review_form: ReviewForm;
 }
 
+interface ReviewForm {
+  title: string;
+  content: string;
+}
 interface Movie {
   id: number;
   backdrop_path: string;
@@ -329,6 +343,30 @@ const reducer = (state: State, action: Action) => {
   }
   if (action.type === SET_CURRENT_GENRE) {
     return { ...state, current_genre: action.payload };
+  }
+  if (action.type === GET_BROWSE_START) {
+    return { ...state, browse_loading: true };
+  }
+  if (action.type === GET_BROWSE_SUCCESS) {
+    return {
+      ...state,
+      browse_loading: false,
+      browse_list: action.payload.filter((title: Title) => {
+        return title.backdrop_path !== null && title.poster_path !== null;
+      }),
+    };
+  }
+  if (action.type === GET_BROWSE_ERROR) {
+    return { ...state, browse_loading: false, browse_error: true };
+  }
+  if (action.type === SET_REVIEW_MODAL) {
+    return { ...state, review_model_open: action.payload };
+  }
+  if (action.type === SET_REVIEW_FORM) {
+    return {
+      ...state,
+      review_form: { ...state.review_form, ...action.payload },
+    };
   }
 
   throw Error("Invalid action type");
