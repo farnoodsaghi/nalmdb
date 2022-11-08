@@ -7,17 +7,15 @@ interface BrowseProps {}
 
 const Browse: React.FC<BrowseProps> = ({}) => {
   const {
-    trending_list,
-    trending_loading,
-    top_rated_list,
-    top_rated_loading,
+    browse_list,
+    browse_loading,
     current_sort,
     current_genre,
     handleCurrentSort,
     handleCurrentGenre,
   } = React.useContext(MoviesContext)!;
 
-  if (trending_loading) {
+  if (browse_loading) {
     return <Loading />;
   }
   return (
@@ -45,7 +43,7 @@ const Browse: React.FC<BrowseProps> = ({}) => {
         </div>
       </div>
       <div className="grid xl:gid-cols-7 lg:grid-cols-6 md:grid-cols-5 sm:grid-cols-4 auto-rows-[minmax(min-content,6rem)] gap-6 mx-12">
-        {trending_list.map((title) => {
+        {browse_list.map((title) => {
           return <MovieCard key={title.id} {...title} />;
         })}
       </div>
