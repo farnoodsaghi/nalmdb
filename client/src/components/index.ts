@@ -12,6 +12,9 @@ import SideBarListItem from "./SideBarListItem";
 import SearchResults from "./SearchResults";
 import MovieGridList from "./MovieGridList";
 import Submenu from "./Submenu";
+import ReviewModal from "./ReviewModal";
+import StarRating from "./StarRating";
+import Reviews from "./Reviews";
 
 export {
   Loading,
@@ -28,4 +31,7 @@ export {
   SearchResults,
   MovieGridList,
   Submenu,
+  ReviewModal,
+  StarRating,
+  Reviews,
 };
