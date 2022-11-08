@@ -12,6 +12,7 @@ module.exports = {
         "dark-grey": "#5F5C5C",
         "darker-grey": "#444444",
         "carbon-black": "#111111",
+        "overlay-black": "rgba(0, 0, 0, 0.5)",
       },
       fontFamily: {
         sarabun: ["Sarabun", "san-serif"],
