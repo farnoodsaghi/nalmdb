@@ -17,11 +17,14 @@ type SideBarMenu = {
 type Sort = {
   id: number;
   name: string;
+  value: string;
 };
 
 type Genre = {
   id: number;
   name: string;
+  movieId: string;
+  tvId: string;
 };
 
 export const TOP_BAR_ITEMS: TopBarObj[] = [
@@ -50,19 +53,19 @@ export const SIDEBAR_ITEMS: SideBarItems = {
 };
 
 export const SORT_VALUES: Sort[] = [
-  { id: 1, name: "Popularity Ascending" },
-  { id: 2, name: "Popularity Descending" },
-  { id: 3, name: "Rating: High to Low" },
-  { id: 4, name: "Rating: Low to High" },
-  { id: 5, name: "Name: A to Z" },
-  { id: 6, name: "Name: Z to A" },
+  { id: 1, name: "Popularity Descending", value: "popularity.desc" },
+  { id: 2, name: "Popularity Ascending", value: "popularity.asc" },
+  { id: 3, name: "Rating: High to Low", value: "vote_average.desc" },
+  { id: 4, name: "Rating: Low to High", value: "vote_average.asc" },
+  { id: 5, name: "Name: A to Z", value: "original_title.desc" },
+  { id: 6, name: "Name: Z to A", value: "original_title.asc" },
 ];
 
 export const GENRE_VALUES: Genre[] = [
-  { id: 1, name: "Action" },
-  { id: 2, name: "Comedy" },
-  { id: 3, name: "Crime" },
-  { id: 4, name: "Drama" },
-  { id: 5, name: "Fantasy" },
-  { id: 6, name: "Scifi" },
+  { id: 1, name: "Action", movieId: "28", tvId: "10759" },
+  { id: 2, name: "Comedy", movieId: "35", tvId: "35" },
+  { id: 3, name: "Crime", movieId: "80", tvId: "80" },
+  { id: 4, name: "Drama", movieId: "18", tvId: "18" },
+  { id: 5, name: "Fantasy", movieId: "14", tvId: "10765" },
+  { id: 6, name: "Sci-Fi", movieId: "878", tvId: "10765" },
 ];
