@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Icon } from "@iconify/react";
-import { CartListItem, GenreTag, Loading } from "../components";
+import {
+  CartListItem,
+  GenreTag,
+  Loading,
+  ReviewModal,
+  Reviews,
+} from "../components";
 import { MoviesContext } from "../context/moviesContext";
 import {
   formatMovieYear,
@@ -24,6 +30,7 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
     cast_list,
     cast_error,
     handleTitleId,
+    handleReviewModal,
   } = React.useContext(MoviesContext)!;
 
   const { user_watch_list, addToWatchlist, removeFromWatchList } =
@@ -126,7 +133,10 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
                 )}
               </p>
               <div className="flex flex-row items-center gap-3 my-6">
-                <button className="flex justify-center items-center rounded-full w-36 h-12 text-normal font-normal font-sarabun text-white bg-royal-purple">
+                <button
+                  onClick={() => handleReviewModal(true)}
+                  className="flex justify-center items-center rounded-full w-36 h-12 text-normal font-normal font-sarabun text-white bg-royal-purple"
+                >
                   Write Review
                 </button>
                 <button
@@ -230,6 +240,25 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
                   </article>
                 </div>
               </div>
+              <div className="mt-10 mb-5">
+                <div className="flex flex-row justify-start items-center gap-1 mb-10">
+                  <h1 className="text-2xl font-semibold font-sarabun text-white">
+                    Reviews
+                  </h1>
+                  {/* <p className="text-sm font-normal font-sarabun text-light-grey">
+                    115
+                  </p>
+                  <Icon
+                    icon="akar-icons:chevron-right"
+                    className="text-white w-7 h-7 my-auto"
+                  /> */}
+                </div>
+                <Reviews />
+                <Reviews />
+                <Reviews />
+                <Reviews />
+                <Reviews />
+              </div>
             </div>
             <div className="flex flex-col justify-start items-start w-1/4 mt-14 mr-16 overflow-hidden">
               <h4 className="text-2xl font-semibold font-sarabun text-white">
@@ -261,6 +290,7 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
           </div>
         </div>
       </div>
+      <ReviewModal />
     </main>
   );
 };
