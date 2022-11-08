@@ -71,3 +71,17 @@ export const isEqual = (arr: any[], obj: any) => {
   });
   return found.length > 0;
 };
+
+export const constructBrowseEndpoint = (
+  mediaType: string,
+  genreId: string,
+  queryString: string
+): string => {
+  if (mediaType === "movie") {
+    return `/discover/movie?api_key=${process.env.REACT_APP_MOVIE_API_KEY}&with_genres=${genreId}&sort_by=${queryString}`;
+  }
+  if (mediaType === "tv") {
+    return `/discover/tv?api_key=${process.env.REACT_APP_MOVIE_API_KEY}&with_genres=${genreId}&sort_by=${queryString}`;
+  }
+  return "";
+};
