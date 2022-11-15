@@ -48,7 +48,6 @@ const initialState: State = {
 };
 
 const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const { active_topbar } = React.useContext(MoviesContext)!;
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const addToWatchlist = (title: Movie) => {
