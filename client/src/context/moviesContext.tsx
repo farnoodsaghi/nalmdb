@@ -56,9 +56,13 @@ import {
   SET_REVIEW_MODAL,
   SET_REVIEW_FORM,
   SET_REVIEW_STAR_RATING,
+  LOAD_SINGLE_TITLE_REVIEWS,
+  ADD_NEW_REVIEW,
+  NEW_REVIEW_SUBMIT,
 } from "../actions";
 import axios from "../axios";
 import requests from "../requests";
+import { UserContext } from "../context/userContext";
 
 interface MoviesContextProps extends State {
   handleActiveTopBar: (id: number) => void;
@@ -128,10 +132,13 @@ const initialState = {
   browse_error: false,
   review_model_open: false,
   review_form: { rating: 0, title: "", content: "" },
+  review_list: [],
+  current_title_reviews: {},
 };
 
 const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const { current_review } = React.useContext(UserContext)!;
   // const {user_name} = React.useContext()
 
   const handleActiveTopBar = (id: number): void => {
@@ -416,6 +423,14 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
       dispatch({ type: GET_BROWSE_ERROR });
     }
   };
+
+  const loadSingleTitleReviews = (media_id: string, media_type: string) => {
+    dispatch({
+      type: LOAD_SINGLE_TITLE_REVIEWS,
+      payload: { media_id, media_type },
+    });
+  };
+
   useEffect(() => {
     fetchLatest();
     fetchTrending();
@@ -431,8 +446,13 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
     if (state.title_id) {
       fetchSingleTitle(state.title_id);
       fetchSingleTitleCast(state.title_id);
+      // loadSingleTitleReviews(state.title_id, state.title_media_type);
     }
   }, [state.title_id]);
+
+  useEffect(() => {
+    loadSingleTitleReviews(state.title_id, state.title_media_type);
+  }, [state.title_id, state.review_list]);
 
   useEffect(() => {
     if (state.search_input) {
@@ -443,6 +463,12 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
   useEffect(() => {
     fetchBrowseList();
   }, [state.active_topbar, state.current_sort, state.current_genre]);
+
+  useEffect(() => {
+    if (Object.keys(current_review).length > 0) {
+      dispatch({ type: ADD_NEW_REVIEW, payload: current_review });
+    }
+  }, [current_review]);
 
   return (
     <MoviesContext.Provider

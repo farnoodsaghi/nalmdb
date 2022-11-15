@@ -48,6 +48,8 @@ import {
   SET_REVIEW_MODAL,
   SET_REVIEW_FORM,
   SET_REVIEW_STAR_RATING,
+  LOAD_SINGLE_TITLE_REVIEWS,
+  ADD_NEW_REVIEW,
 } from "../actions";
 
 interface Action {
@@ -110,6 +112,8 @@ export interface State {
   browse_error: boolean;
   review_model_open: boolean;
   review_form: ReviewForm;
+  review_list: any[];
+  current_title_reviews: any;
 }
 
 interface ReviewForm {
@@ -376,6 +380,18 @@ const reducer = (state: State, action: Action) => {
       ...state,
       review_form: { ...state.review_form, rating: action.payload },
     };
+  }
+  if (action.type === ADD_NEW_REVIEW) {
+    return { ...state, review_list: [...state.review_list, action.payload] };
+  }
+  if (action.type === LOAD_SINGLE_TITLE_REVIEWS) {
+    const { media_id, media_type } = action.payload;
+    const { review_list } = state;
+    const tempCurrentReviewList = review_list.filter(
+      (review) =>
+        review.media_id === media_id && review.media_type === media_type
+    );
+    return { ...state, current_title_reviews: tempCurrentReviewList };
   }
   throw Error("Invalid action type");
 };

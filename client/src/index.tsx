@@ -10,10 +10,10 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <MoviesProvider>
-      <UserProvider>
+    <UserProvider>
+      <MoviesProvider>
         <App />
-      </UserProvider>
-    </MoviesProvider>
+      </MoviesProvider>
+    </UserProvider>
   </React.StrictMode>
 );
