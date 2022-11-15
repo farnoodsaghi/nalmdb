@@ -30,6 +30,25 @@
       #111111
     );
   }
+
+  .circle-dash {
+    fill: none;
+    stroke-width: 10;
+    stroke: #000;
+    stroke-dasharray: 440;
+    stroke-dashoffset: 440;
+    stroke-linecap: round;
+  }
+
+  .circle-outline {
+    stroke-dashoffset: 0;
+    stroke: #a8a8a8;
+  }
+
+  .circle-bar {
+    /* stroke-dashoffset: 57.2; */
+    stroke: #743fd8;
+  }
 }
 
 html {
