@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import StarRating from "./StarRating";
 import { MoviesContext } from "../context/moviesContext";
+import { UserContext } from "../context/userContext";
 
 interface ReviewModalProps {}
 
@@ -10,7 +11,11 @@ const ReviewModal: React.FC<ReviewModalProps> = ({}) => {
     review_form,
     handleReviewModal,
     handleReviewForm,
+    title_media_type,
+    title_id,
+    handleReviewStarRating,
   } = React.useContext(MoviesContext)!;
+  const { user_name, handleReviewSubmit } = React.useContext(UserContext)!;
   const modalRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -28,6 +33,26 @@ const ReviewModal: React.FC<ReviewModalProps> = ({}) => {
       handleReviewModal(false);
     }
   };
+
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+    handleReviewModal(false);
+    handleReviewSubmit({
+      media_type: title_media_type,
+      media_id: title_id,
+      user_name: user_name,
+      ...review_form,
+    });
+
+    console.log({
+      media_type: title_media_type,
+      media_id: title_id,
+      user_name: user_name,
+      ...review_form,
+    });
+  };
   if (review_model_open) {
     return (
       <div className="grid w-full h-full fixed top-0 left-0 bg-overlay-black z-[10] place-items-center">
@@ -36,11 +61,15 @@ const ReviewModal: React.FC<ReviewModalProps> = ({}) => {
           className="flex flex-col items-center justify-start bg-carbon-black drop-shadow-xl w-1/2 h-3/4 z-[100] rounded-md text-white font-sarabun font-normal text-lg"
         >
           <form
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={handleSubmit}
             className="flex flex-col w-full h-full items-center justify-center my-8 mx-8 gap-4"
           >
             <div className="flex flex-col w-full gap-6">
-              <StarRating starCount="5" rating="5" />
+              <StarRating
+                starCount="5"
+                rating={review_form.rating}
+                handleRating={handleReviewStarRating}
+              />
               <div className="flex flex-col justify-start items-center mx-12 gap-1 mt-10">
                 {/* <label htmlFor="" className="self-start text-base">
                 Title
@@ -67,7 +96,10 @@ const ReviewModal: React.FC<ReviewModalProps> = ({}) => {
                 />
               </div>
               <div className="flex flex-row justify-between items-center mx-12 gap-8">
-                <button className="rounded-md bg-royal-purple grow h-12">
+                <button
+                  type="submit"
+                  className="rounded-md bg-royal-purple grow h-12"
+                >
                   Submit
                 </button>
                 <button
