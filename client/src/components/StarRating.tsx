@@ -3,10 +3,15 @@ import { Icon } from "@iconify/react";
 
 interface StarRatingProps {
   starCount: string;
-  rating: string;
+  rating: number;
+  handleRating: (rating: number) => void;
 }
 
-const StarRating: React.FC<StarRatingProps> = ({ starCount }) => {
+const StarRating: React.FC<StarRatingProps> = ({
+  starCount,
+  rating,
+  handleRating,
+}) => {
   const createStarArray = (count: number): number[] => {
     return Array(count)
       .fill(0)
@@ -14,7 +19,7 @@ const StarRating: React.FC<StarRatingProps> = ({ starCount }) => {
   };
   const [stars, setStars] = useState<number[]>([]);
   const [fillStar, setFillStar] = useState<number>(0);
-  const [rating, setRating] = useState<number>(0);
+  // const [rating, setRating] = useState<number>(Number(rating));
 
   useEffect(() => {
     setStars(createStarArray(Number(starCount)));
@@ -35,7 +40,7 @@ const StarRating: React.FC<StarRatingProps> = ({ starCount }) => {
             }`}
             onClick={() => {
               setFillStar(id);
-              setRating(id);
+              handleRating(id);
             }}
             onMouseEnter={() => setFillStar(id)}
           />
