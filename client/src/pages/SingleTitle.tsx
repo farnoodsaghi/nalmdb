@@ -32,6 +32,7 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
     cast_error,
     handleTitleId,
     handleReviewModal,
+    current_title_reviews,
   } = React.useContext(MoviesContext)!;
 
   const { user_watch_list, addToWatchlist, removeFromWatchList } =
@@ -245,7 +246,7 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
                   </article>
                 </div>
               </div>
-              <div className="mt-10 mb-5">
+              <div className="mt-10 mb-5 w-full">
                 <div className="flex flex-row justify-start items-center gap-1 mb-10">
                   <h1 className="text-2xl font-semibold font-sarabun text-white">
                     Reviews
@@ -258,38 +259,15 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
                     className="text-white w-7 h-7 my-auto"
                   /> */}
                 </div>
-                <Reviews
-                  user="Greg Smith"
-                  rating="5"
-                  content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti,
-            ipsum doloremque at neque ea ducimus? Consectetur doloremque totam,
-            nulla, vero accusantium sequi, nesciunt officiis facere aliquam odio
-            nobis eum commodi?"
-                />
-                <Reviews
-                  user="Greg Smith"
-                  rating="5"
-                  content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti,
-            ipsum doloremque at neque ea ducimus? Consectetur doloremque totam,
-            nulla, vero accusantium sequi, nesciunt officiis facere aliquam odio
-            nobis eum commodi?"
-                />
-                <Reviews
-                  user="Greg Smith"
-                  rating="5"
-                  content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti,
-            ipsum doloremque at neque ea ducimus? Consectetur doloremque totam,
-            nulla, vero accusantium sequi, nesciunt officiis facere aliquam odio
-            nobis eum commodi?"
-                />
-                <Reviews
-                  user="Greg Smith"
-                  rating="4"
-                  content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti,
-            ipsum doloremque at neque ea ducimus? Consectetur doloremque totam,
-            nulla, vero accusantium sequi, nesciunt officiis facere aliquam odio
-            nobis eum commodi?"
-                />
+                {current_title_reviews.length > 0 ? (
+                  current_title_reviews.map((review: any, index: number) => {
+                    return <Reviews key={index} {...review} />;
+                  })
+                ) : (
+                  <h5 className="text-normal font-light font-sarabun text-light-grey text-center -mt-5">
+                    No reviews have been submitted for this title yet.
+                  </h5>
+                )}
               </div>
             </div>
             <div className="flex flex-col justify-start items-start w-1/4 mt-14 mr-16 overflow-hidden">
