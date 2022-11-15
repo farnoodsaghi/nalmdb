@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import {
   CartListItem,
+  CircleRating,
   GenreTag,
   Loading,
   ReviewModal,
@@ -54,6 +55,7 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
     status,
     number_of_seasons,
     number_of_episodes,
+    vote_average,
   } = single_title!;
 
   const [castList, setCastList] = useState<any[]>([]);
@@ -93,13 +95,16 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
         />
         <div className="bottom-fade w-full h-36 absolute bottom-0">
           <div className="flex flex-row gap-16 mx-16 justify-start">
-            <div className="flex w-1/4 justify-start items-start">
+            <div className="flex flex-col w-1/4 justify-start items-start">
               <div className="flex justify-center w-[18rem] items-center bg-dark-grey rounded-md cursor-pointer hover:brightness-75 aspect-[1/1.5]">
                 <img
                   className="aspect-[1/1.5] rounded-md"
                   src={`https://image.tmdb.org/t/p/original/${poster_path}`}
                   alt={title || name}
                 />
+              </div>
+              <div className="self-center mt-10">
+                <CircleRating rating={vote_average} />
               </div>
             </div>
             <div className="flex flex-col gap-1.5 w-1/2 justify-start items-start mt-14">
@@ -253,11 +258,38 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
                     className="text-white w-7 h-7 my-auto"
                   /> */}
                 </div>
-                <Reviews />
-                <Reviews />
-                <Reviews />
-                <Reviews />
-                <Reviews />
+                <Reviews
+                  user="Greg Smith"
+                  rating="5"
+                  content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti,
+            ipsum doloremque at neque ea ducimus? Consectetur doloremque totam,
+            nulla, vero accusantium sequi, nesciunt officiis facere aliquam odio
+            nobis eum commodi?"
+                />
+                <Reviews
+                  user="Greg Smith"
+                  rating="5"
+                  content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti,
+            ipsum doloremque at neque ea ducimus? Consectetur doloremque totam,
+            nulla, vero accusantium sequi, nesciunt officiis facere aliquam odio
+            nobis eum commodi?"
+                />
+                <Reviews
+                  user="Greg Smith"
+                  rating="5"
+                  content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti,
+            ipsum doloremque at neque ea ducimus? Consectetur doloremque totam,
+            nulla, vero accusantium sequi, nesciunt officiis facere aliquam odio
+            nobis eum commodi?"
+                />
+                <Reviews
+                  user="Greg Smith"
+                  rating="4"
+                  content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti,
+            ipsum doloremque at neque ea ducimus? Consectetur doloremque totam,
+            nulla, vero accusantium sequi, nesciunt officiis facere aliquam odio
+            nobis eum commodi?"
+                />
               </div>
             </div>
             <div className="flex flex-col justify-start items-start w-1/4 mt-14 mr-16 overflow-hidden">
