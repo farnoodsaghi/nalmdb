@@ -55,6 +55,7 @@ import {
   GET_BROWSE_ERROR,
   SET_REVIEW_MODAL,
   SET_REVIEW_FORM,
+  SET_REVIEW_STAR_RATING,
 } from "../actions";
 import axios from "../axios";
 import requests from "../requests";
@@ -69,6 +70,7 @@ interface MoviesContextProps extends State {
   handleCurrentGenre: (id: number) => void;
   handleReviewModal: (isOpen: boolean) => void;
   handleReviewForm: (target: any) => void;
+  handleReviewStarRating: (rating: number) => void;
 }
 
 const MoviesContext = React.createContext<MoviesContextProps | null>(null);
@@ -125,11 +127,12 @@ const initialState = {
   browse_list: [],
   browse_error: false,
   review_model_open: false,
-  review_form: { title: "", content: "" },
+  review_form: { rating: 0, title: "", content: "" },
 };
 
 const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  // const {user_name} = React.useContext()
 
   const handleActiveTopBar = (id: number): void => {
     dispatch({ type: SET_ACTIVE_TOPBAR, payload: id });
@@ -162,6 +165,10 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
   const handleReviewForm = (target: any): void => {
     const { name, value } = target;
     dispatch({ type: SET_REVIEW_FORM, payload: { [name]: value } });
+  };
+
+  const handleReviewStarRating = (rating: number): void => {
+    dispatch({ type: SET_REVIEW_STAR_RATING, payload: rating });
   };
 
   const fetchLatest = async (): Promise<void> => {
@@ -450,6 +457,7 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
         handleCurrentGenre,
         handleReviewModal,
         handleReviewForm,
+        handleReviewStarRating,
       }}
     >
       {children}
