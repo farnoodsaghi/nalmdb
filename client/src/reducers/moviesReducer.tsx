@@ -47,6 +47,7 @@ import {
   GET_BROWSE_ERROR,
   SET_REVIEW_MODAL,
   SET_REVIEW_FORM,
+  SET_REVIEW_STAR_RATING,
 } from "../actions";
 
 interface Action {
@@ -112,6 +113,7 @@ export interface State {
 }
 
 interface ReviewForm {
+  rating: number;
   title: string;
   content: string;
 }
@@ -134,6 +136,7 @@ interface Movie {
   status: string;
   number_of_seasons?: number;
   number_of_episodes?: number;
+  vote_average: number;
 }
 
 interface ProductionCountries {
@@ -368,7 +371,12 @@ const reducer = (state: State, action: Action) => {
       review_form: { ...state.review_form, ...action.payload },
     };
   }
-
+  if (action.type === SET_REVIEW_STAR_RATING) {
+    return {
+      ...state,
+      review_form: { ...state.review_form, rating: action.payload },
+    };
+  }
   throw Error("Invalid action type");
 };
 
