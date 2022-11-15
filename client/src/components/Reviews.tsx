@@ -3,12 +3,12 @@ import { Icon } from "@iconify/react";
 import defaultProfile from "../assets/default_profile_path.png";
 
 interface ReviewsProps {
-  user: string;
+  user_name: string;
   rating: string;
   content: string;
 }
 
-const Reviews: React.FC<ReviewsProps> = ({ user, rating, content }) => {
+const Reviews: React.FC<ReviewsProps> = ({ user_name, rating, content }) => {
   const [liked, setLiked] = useState(false);
   const [stars, setStars] = useState<number[]>(
     new Array(5).fill(0).map((_, index) => index + 1)
@@ -40,7 +40,7 @@ const Reviews: React.FC<ReviewsProps> = ({ user, rating, content }) => {
           </div>
           <p className="text-base font-light font-sarabun text-light-grey w-full">
             <span className="text-base font-light font-sarabun text-cyan-500 mr-2">
-              {user}
+              {user_name}
             </span>
             {content}
           </p>
