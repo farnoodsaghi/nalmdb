@@ -15,6 +15,7 @@ import Submenu from "./Submenu";
 import ReviewModal from "./ReviewModal";
 import StarRating from "./StarRating";
 import Reviews from "./Reviews";
+import CircleRating from "./CircleRating";
 
 export {
   Loading,
@@ -34,4 +35,5 @@ export {
   ReviewModal,
   StarRating,
   Reviews,
+  CircleRating,
 };
