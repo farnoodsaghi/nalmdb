@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import SideBarListItem from "./SideBarListItem";
 import { MoviesContext } from "../context/moviesContext";
+import { UserContext } from "../context/userContext";
 import { SIDEBAR_ITEMS } from "../utils/constants";
 
 interface SideBarProps {}
@@ -15,6 +16,7 @@ interface MenuItem {
 
 const SideBar: React.FC<SideBarProps> = ({}) => {
   const { active_sidebar } = React.useContext(MoviesContext)!;
+  const { handleUserLogout, is_logged_in } = React.useContext(UserContext)!;
   const { menu, library } = SIDEBAR_ITEMS;
   return (
     <nav className="flex flex-col justify-between items-start fixed w-1/6 h-screen bg-off-black">
@@ -64,10 +66,26 @@ const SideBar: React.FC<SideBarProps> = ({}) => {
           <Icon icon="ci:settings" className="w-5 h-5" />
           <h3>Settings</h3>
         </span>
-        <span className="flex flex-row justify-start items-end gap-2 ml-8 mt-2 font-sarabun font-lg font-normal text-light-grey leading-tight hover:text-white cursor-pointer">
-          <Icon icon="heroicons-outline:logout" className="w-5 h-5" />
-          <h3>Logout</h3>
-        </span>
+        <Link to={!is_logged_in ? "/login" : "/"}>
+          <span
+            onClick={() => {
+              if (is_logged_in) {
+                handleUserLogout();
+              }
+            }}
+            className="flex flex-row justify-start items-end gap-2 ml-8 mt-2 font-sarabun font-lg font-normal text-light-grey leading-tight hover:text-white cursor-pointer"
+          >
+            <Icon
+              icon={
+                is_logged_in
+                  ? "heroicons-outline:logout"
+                  : "heroicons-outline:login"
+              }
+              className="w-5 h-5"
+            />
+            <h3>{is_logged_in ? "Logout" : "Login"}</h3>
+          </span>
+        </Link>
       </div>
     </nav>
   );
