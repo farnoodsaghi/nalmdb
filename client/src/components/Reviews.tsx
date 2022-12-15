@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react";
+import { UserContext } from "../context/userContext";
 import defaultProfile from "../assets/default_profile_path.png";
 
 interface ReviewsProps {
@@ -9,6 +10,7 @@ interface ReviewsProps {
 }
 
 const Reviews: React.FC<ReviewsProps> = ({ user_name, rating, content }) => {
+  const { user_avatar } = React.useContext(UserContext)!;
   const [liked, setLiked] = useState(false);
   const [stars, setStars] = useState<number[]>(
     new Array(5).fill(0).map((_, index) => index + 1)
@@ -17,7 +19,7 @@ const Reviews: React.FC<ReviewsProps> = ({ user_name, rating, content }) => {
     <section className="flex flex-col justify-center items-start gap-3 bg-off-black drop-shadow-md border-b-4 border-royal-purple p-5 mb-8 rounded-t-md">
       <div className="flex flex-row justify-between items-start gap-4">
         <img
-          src={defaultProfile}
+          src={user_avatar || defaultProfile}
           alt="profile-pic"
           className="rounded-full w-12 h-12"
         />
