@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import StarRating from "./StarRating";
 import { MoviesContext } from "../context/moviesContext";
 import { UserContext } from "../context/userContext";
+import { v4 as uuidv4 } from "uuid";
 
 interface ReviewModalProps {}
 
@@ -15,7 +16,8 @@ const ReviewModal: React.FC<ReviewModalProps> = ({}) => {
     title_id,
     handleReviewStarRating,
   } = React.useContext(MoviesContext)!;
-  const { user_name, handleReviewSubmit } = React.useContext(UserContext)!;
+  const { user_name, user_avatar, handleReviewSubmit } =
+    React.useContext(UserContext)!;
   const modalRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -40,9 +42,11 @@ const ReviewModal: React.FC<ReviewModalProps> = ({}) => {
     e.preventDefault();
     handleReviewModal(false);
     handleReviewSubmit({
+      review_id: uuidv4(),
       media_type: title_media_type,
       media_id: title_id,
       user_name: user_name,
+      user_avatar: user_avatar,
       ...review_form,
     });
 
