@@ -4,7 +4,7 @@ interface LoadingProps {}
 
 const Loading: React.FC<LoadingProps> = ({}) => {
   return (
-    <div className="flex flex-col min-h-screen items-center justify-center bg-black opacity-50">
+    <div className="flex flex-col min-h-screen items-center justify-center bg-carbon-black opacity-50">
       <svg
         className="w-32 h-32 animate-spin fill-royal-purple"
         viewBox="0 0 20 20"
