@@ -16,6 +16,7 @@ import ReviewModal from "./ReviewModal";
 import StarRating from "./StarRating";
 import Reviews from "./Reviews";
 import CircleRating from "./CircleRating";
+import ReviewPreview from "./ReviewPreview";
 
 export {
   Loading,
@@ -36,4 +37,5 @@ export {
   StarRating,
   Reviews,
   CircleRating,
+  ReviewPreview,
 };
