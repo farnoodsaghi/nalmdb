@@ -16,6 +16,8 @@ const requests = {
   fetchScifiMovies: `/discover/movie?api_key=${process.env.REACT_APP_MOVIE_API_KEY}&with_genres=878`,
   fetchScifiTV: `/discover/tv?api_key=${process.env.REACT_APP_MOVIE_API_KEY}&with_genres=10765`,
   fetchSearchResults: `/search/multi?api_key=${process.env.REACT_APP_MOVIE_API_KEY}&language=en-US&query=`,
+  fetchRequestToken: `/authentication/token/new?api_key=${process.env.REACT_APP_MOVIE_API_KEY}`,
+  fetchAccountInfo: `/account?api_key=${process.env.REACT_APP_MOVIE_API_KEY}`,
 };
 
 export default requests;
