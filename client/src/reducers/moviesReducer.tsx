@@ -50,6 +50,17 @@ import {
   SET_REVIEW_STAR_RATING,
   LOAD_SINGLE_TITLE_REVIEWS,
   ADD_NEW_REVIEW,
+  TITLE_TRAILER_START,
+  TITLE_TRAILER_SUCCESS,
+  TITLE_TRAILER_ERROR,
+  SET_RATING_BOX,
+  SET_TITLE_RATING,
+  LOAD_RATED_MOVIES_START,
+  LOAD_RATED_MOVIES_SUCCESS,
+  LOAD_RATED_MOVIES_ERROR,
+  LOAD_RATED_TV_START,
+  LOAD_RATED_TV_SUCCESS,
+  LOAD_RATED_TV_ERROR,
 } from "../actions";
 
 interface Action {
@@ -114,6 +125,17 @@ export interface State {
   review_form: ReviewForm;
   review_list: any[];
   current_title_reviews: any;
+  current_rating: number;
+  rating_box_open: boolean;
+  title_trailer_loading: boolean;
+  title_trailer_error: boolean;
+  title_trailer: any;
+  rated_movies_loading: boolean;
+  rated_movies_list: any[];
+  rated_movies_error: boolean;
+  rated_tv_loading: boolean;
+  rated_tv_list: any[];
+  rated_tv_error: boolean;
 }
 
 interface ReviewForm {
@@ -392,6 +414,80 @@ const reducer = (state: State, action: Action) => {
         review.media_id === media_id && review.media_type === media_type
     );
     return { ...state, current_title_reviews: tempCurrentReviewList };
+  }
+  if (action.type === TITLE_TRAILER_START) {
+    return { ...state, title_trailer_loading: true };
+  }
+  if (action.type === TITLE_TRAILER_SUCCESS) {
+    const trailer = action.payload.find((trailer: any) => {
+      const { type, official, site } = trailer;
+      return type === "Trailer" && site === "YouTube" && official;
+    });
+
+    return {
+      ...state,
+      title_trailer_loading: false,
+      title_trailer: trailer
+        ? {
+            type: trailer.type,
+            site: trailer.site,
+            key: trailer.key,
+            official: trailer.official,
+          }
+        : {
+            type: "",
+            site: "",
+            key: "",
+            official: false,
+          },
+    };
+  }
+  if (action.type === TITLE_TRAILER_ERROR) {
+    return {
+      ...state,
+      title_trailer_loading: false,
+      title_trailer_error: true,
+    };
+  }
+  if (action.type === SET_RATING_BOX) {
+    return { ...state, rating_box_open: action.payload };
+  }
+  if (action.type === SET_TITLE_RATING) {
+    return { ...state, current_rating: action.payload };
+  }
+  if (action.type === LOAD_RATED_MOVIES_START) {
+    return { ...state, rated_movies_loading: true };
+  }
+  if (action.type === LOAD_RATED_MOVIES_SUCCESS) {
+    return {
+      ...state,
+      rated_movies_loading: false,
+      rated_movies_list: action.payload,
+    };
+  }
+  if (action.type === LOAD_RATED_MOVIES_ERROR) {
+    return {
+      ...state,
+      rated_movies_loading: false,
+      rated_movies_error: true,
+    };
+  }
+  if (action.type === LOAD_RATED_TV_START) {
+    return { ...state, rated_tv_loading: true };
+  }
+  if (action.type === LOAD_RATED_TV_SUCCESS) {
+    return {
+      ...state,
+      rated_tv_loading: false,
+      rated_tv_list: action.payload,
+    };
+  }
+  if (action.type === LOAD_RATED_TV_ERROR) {
+    return {
+      ...state,
+      rated_tv_loading: false,
+      rated_tv_error: true,
+    };
   }
   throw Error("Invalid action type");
 };

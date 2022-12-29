@@ -59,6 +59,17 @@ import {
   LOAD_SINGLE_TITLE_REVIEWS,
   ADD_NEW_REVIEW,
   NEW_REVIEW_SUBMIT,
+  TITLE_TRAILER_START,
+  TITLE_TRAILER_SUCCESS,
+  TITLE_TRAILER_ERROR,
+  SET_TITLE_RATING,
+  SET_RATING_BOX,
+  LOAD_RATED_MOVIES_START,
+  LOAD_RATED_MOVIES_SUCCESS,
+  LOAD_RATED_MOVIES_ERROR,
+  LOAD_RATED_TV_START,
+  LOAD_RATED_TV_SUCCESS,
+  LOAD_RATED_TV_ERROR,
 } from "../actions";
 import axios from "../axios";
 import requests from "../requests";
@@ -75,6 +86,9 @@ interface MoviesContextProps extends State {
   handleReviewModal: (isOpen: boolean) => void;
   handleReviewForm: (target: any) => void;
   handleReviewStarRating: (rating: number) => void;
+  getTitleTrailer: () => void;
+  handleTitleRating: (rating: number) => void;
+  handleRatingBox: (isOpen: boolean) => void;
 }
 
 const MoviesContext = React.createContext<MoviesContextProps | null>(null);
@@ -134,11 +148,28 @@ const initialState = {
   review_form: { rating: 0, title: "", content: "" },
   review_list: [],
   current_title_reviews: {},
+  current_rating: 0,
+  rating_box_open: false,
+  title_trailer_loading: false,
+  title_trailer_error: false,
+  title_trailer: {
+    type: "",
+    official: false,
+    key: "",
+    site: "",
+  },
+  rated_movies_loading: false,
+  rated_movies_list: [],
+  rated_movies_error: false,
+  rated_tv_loading: false,
+  rated_tv_list: [],
+  rated_tv_error: false,
 };
 
 const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { current_review } = React.useContext(UserContext)!;
+  const { current_review, session_id, user_id, is_logged_in } =
+    React.useContext(UserContext)!;
   // const {user_name} = React.useContext()
 
   const handleActiveTopBar = (id: number): void => {
@@ -167,6 +198,10 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
 
   const handleReviewModal = (isOpen: boolean): void => {
     dispatch({ type: SET_REVIEW_MODAL, payload: isOpen });
+  };
+
+  const handleRatingBox = (isOpen: boolean): void => {
+    dispatch({ type: SET_RATING_BOX, payload: isOpen });
   };
 
   const handleReviewForm = (target: any): void => {
@@ -431,6 +466,78 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
     });
   };
 
+  const submitTitleRating = async () => {
+    try {
+      const endpoint = `/${state.title_media_type!}/${state.title_id!}/rating?session_id=${session_id}&api_key=${
+        process.env.REACT_APP_MOVIE_API_KEY
+      }`;
+      const response = await axios.post(
+        endpoint,
+        JSON.stringify({ value: state.current_rating! * 2 }),
+        {
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+          },
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleTitleRating = (rating: number) => {
+    dispatch({ type: SET_TITLE_RATING, payload: rating });
+  };
+
+  const getTitleTrailer = async () => {
+    dispatch({ type: TITLE_TRAILER_START });
+    try {
+      let endpoint = `/${state.title_media_type!}/${state.title_id!}/videos?api_key=${
+        process.env.REACT_APP_MOVIE_API_KEY
+      }&language=en-US`;
+      const response = await axios.get(endpoint);
+      dispatch({
+        type: TITLE_TRAILER_SUCCESS,
+        payload: response!.data.results,
+      });
+    } catch (error) {
+      console.log(error);
+      dispatch({ type: TITLE_TRAILER_ERROR });
+    }
+  };
+
+  const fetchRatedTV = async () => {
+    dispatch({ type: LOAD_RATED_TV_START });
+    try {
+      const response = await axios.get(
+        `/account/${user_id}/rated/tv?api_key=${process.env.REACT_APP_MOVIE_API_KEY}&session_id=${session_id}`
+      );
+      dispatch({
+        type: LOAD_RATED_TV_SUCCESS,
+        payload: response!.data.results,
+      });
+      console.log(response!.data.results);
+    } catch (error) {
+      dispatch({ type: LOAD_RATED_TV_ERROR });
+    }
+  };
+
+  const fetchRatedMovies = async () => {
+    dispatch({ type: LOAD_RATED_MOVIES_START });
+    try {
+      const response = await axios.get(
+        `/account/${user_id}/rated/movies?api_key=${process.env.REACT_APP_MOVIE_API_KEY}&session_id=${session_id}`
+      );
+      dispatch({
+        type: LOAD_RATED_MOVIES_SUCCESS,
+        payload: response!.data.results,
+      });
+      console.log(response!.data.results);
+    } catch (error) {
+      dispatch({ type: LOAD_RATED_MOVIES_ERROR });
+    }
+  };
+
   useEffect(() => {
     fetchLatest();
     fetchTrending();
@@ -444,6 +551,7 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
 
   useEffect(() => {
     if (state.title_id) {
+      handleTitleRating(0);
       fetchSingleTitle(state.title_id);
       fetchSingleTitleCast(state.title_id);
       // loadSingleTitleReviews(state.title_id, state.title_media_type);
@@ -470,6 +578,19 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
     }
   }, [current_review]);
 
+  useEffect(() => {
+    if (state.title_media_type && state.title_id) {
+      submitTitleRating();
+    }
+  }, [state.current_rating]);
+
+  useEffect(() => {
+    if (is_logged_in && user_id && session_id) {
+      fetchRatedTV();
+      fetchRatedMovies();
+    }
+  }, [is_logged_in, state.current_rating, user_id, session_id]);
+
   return (
     <MoviesContext.Provider
       value={{
@@ -484,6 +605,9 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
         handleReviewModal,
         handleReviewForm,
         handleReviewStarRating,
+        getTitleTrailer,
+        handleTitleRating,
+        handleRatingBox,
       }}
     >
       {children}
