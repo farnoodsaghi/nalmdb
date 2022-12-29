@@ -49,13 +49,6 @@ const ReviewModal: React.FC<ReviewModalProps> = ({}) => {
       user_avatar: user_avatar,
       ...review_form,
     });
-
-    console.log({
-      media_type: title_media_type,
-      media_id: title_id,
-      user_name: user_name,
-      ...review_form,
-    });
   };
   if (review_model_open) {
     return (
