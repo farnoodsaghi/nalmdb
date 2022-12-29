@@ -18,15 +18,21 @@ import {
   ACCOUNT_INFO_START,
   ACCOUNT_INFO_SUCCESS,
   ACCOUNT_INFO_ERROR,
+  LOAD_WATCHLIST_API_START,
+  LOAD_WATCHLIST_API_SUCCESS,
+  LOAD_WATCHLIST_API_ERROR,
 } from "../actions";
 
 export interface State {
   is_logged_in: boolean;
   user_name: string;
   user_avatar: string;
+  user_id: number | null;
   user_loading: boolean;
   user_error: boolean;
   user_watch_list: Movie[];
+  user_watch_list_loading: boolean;
+  user_watch_list_error: boolean;
   current_review: any;
   user_reviews_list: any[];
   request_token_loading: boolean;
@@ -75,7 +81,11 @@ const reducer = (state: State, action: Action): State => {
     return {
       ...state,
       user_watch_list: state.user_watch_list.filter((title) => {
-        return JSON.stringify(title) !== JSON.stringify(action.payload);
+        // return JSON.stringify(title) !== JSON.stringify(action.payload);
+        return (
+          title.id !== action.payload.id &&
+          title.poster_path !== action.payload.poster_path
+        );
       }),
     };
   }
@@ -183,12 +193,14 @@ const reducer = (state: State, action: Action): State => {
       },
       name,
       username,
+      id,
     } = action.payload;
     return {
       ...state,
       user_loading: false,
       user_name: name || username,
       user_avatar: `https://www.gravatar.com/avatar/${hash}`,
+      user_id: id,
     };
   }
   if (action.type === ACCOUNT_INFO_ERROR) {
@@ -196,6 +208,27 @@ const reducer = (state: State, action: Action): State => {
       ...state,
       user_loading: false,
       user_error: true,
+    };
+  }
+  if (action.type === LOAD_WATCHLIST_API_START) {
+    return {
+      ...state,
+      user_watch_list_loading: true,
+      user_watch_list_error: false,
+    };
+  }
+  if (action.type === LOAD_WATCHLIST_API_SUCCESS) {
+    return {
+      ...state,
+      user_watch_list_loading: false,
+      user_watch_list: action.payload,
+    };
+  }
+  if (action.type === LOAD_WATCHLIST_API_ERROR) {
+    return {
+      ...state,
+      user_watch_list_loading: false,
+      user_watch_list_error: true,
     };
   }
   throw Error("Invalid action type");

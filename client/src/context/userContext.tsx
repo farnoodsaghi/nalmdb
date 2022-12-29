@@ -23,6 +23,9 @@ import {
   ACCOUNT_INFO_START,
   ACCOUNT_INFO_SUCCESS,
   ACCOUNT_INFO_ERROR,
+  LOAD_WATCHLIST_API_START,
+  LOAD_WATCHLIST_API_SUCCESS,
+  LOAD_WATCHLIST_API_ERROR,
 } from "../actions";
 import requests from "../requests";
 
@@ -34,6 +37,11 @@ interface UserContextProps extends State {
   fetchTempRequestToken: () => void;
   createNewSessionId: () => void;
   handleUserLogout: () => void;
+  postWatchlistToApi: (
+    media_type: string,
+    media_id: number,
+    watchlist: boolean
+  ) => void;
 }
 
 interface UserProviderProps {
@@ -64,9 +72,12 @@ const initialState: State = {
   is_logged_in: false,
   user_name: "",
   user_avatar: "",
+  user_id: null,
   user_loading: false,
   user_error: false,
   user_watch_list: [],
+  user_watch_list_loading: false,
+  user_watch_list_error: false,
   current_review: {},
   user_reviews_list: [],
   request_token_loading: false,
@@ -183,6 +194,62 @@ const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     }
   };
 
+  const postWatchlistToApi = async (
+    media_type: string,
+    media_id: number,
+    watchlist: boolean
+  ) => {
+    try {
+      const response = await axios.post(
+        `/account/${state.user_id!}/watchlist?session_id=${
+          state.session_id
+        }&api_key=${process.env.REACT_APP_MOVIE_API_KEY}`,
+        JSON.stringify({ media_type, media_id, watchlist }),
+        {
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+          },
+        }
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getWatchlistFromApi = async () => {
+    dispatch({ type: LOAD_WATCHLIST_API_START });
+    try {
+      const responseMovies = await axios.get(
+        `/account/${state.user_id!}/watchlist/movies?session_id=${
+          state.session_id
+        }&sort_by=created_at.desc&api_key=${
+          process.env.REACT_APP_MOVIE_API_KEY
+        }`
+      );
+      const responseTv = await axios.get(
+        `/account/${state.user_id!}/watchlist/tv?session_id=${
+          state.session_id
+        }&sort_by=created_at.desc&api_key=${
+          process.env.REACT_APP_MOVIE_API_KEY
+        }`
+      );
+      dispatch({
+        type: LOAD_WATCHLIST_API_SUCCESS,
+        payload: [...responseMovies!.data.results, ...responseTv!.data.results],
+      });
+    } catch (error) {
+      console.log(error);
+      dispatch({ type: LOAD_WATCHLIST_API_ERROR });
+    }
+  };
+
+  useEffect(() => {
+    if (state.user_id) {
+      getWatchlistFromApi();
+    }
+  }, [state.user_id]);
+
   useEffect(() => {
     if (Object.keys(state.current_review).length > 0) {
       dispatch({ type: USER_REVIEW_LIST_ADD, payload: state.current_review });
@@ -227,6 +294,7 @@ const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         fetchTempRequestToken,
         createNewSessionId,
         handleUserLogout,
+        postWatchlistToApi,
       }}
     >
       {children}
