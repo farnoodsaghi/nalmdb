@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import {
@@ -8,6 +8,8 @@ import {
   Loading,
   ReviewModal,
   Reviews,
+  TrailerModal,
+  RatingBox,
 } from "../components";
 import { MoviesContext } from "../context/moviesContext";
 import {
@@ -21,6 +23,11 @@ import { UserContext } from "../context/userContext";
 
 interface SingleTitleProps {}
 
+interface RatingBoxLocation {
+  left?: number;
+  top?: number;
+}
+
 const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
   let { id } = useParams();
   const {
@@ -33,10 +40,18 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
     handleTitleId,
     handleReviewModal,
     current_title_reviews,
+    title_media_type,
+    title_id,
+    handleRatingBox,
+    handleMediaType,
   } = React.useContext(MoviesContext)!;
 
-  const { user_watch_list, addToWatchlist, removeFromWatchList } =
-    React.useContext(UserContext)!;
+  const {
+    user_watch_list,
+    addToWatchlist,
+    removeFromWatchList,
+    postWatchlistToApi,
+  } = React.useContext(UserContext)!;
 
   const {
     backdrop_path,
@@ -61,9 +76,36 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
 
   const [castList, setCastList] = useState<any[]>([]);
   const [isCastExtended, setIsCastExtended] = useState<boolean>(false);
+  const [showTrailer, setShowTrailer] = useState<boolean>(false);
+  const [ratingBoxLocation, setRatingBoxLocation] = useState<RatingBoxLocation>(
+    {}
+  );
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    handleRatingBox(true);
+    const node = e.target as HTMLElement;
+    const position = node!.getBoundingClientRect();
+    console.log(node!.scrollTop);
+    const coordinates = {
+      left: position.left + window.scrollX,
+      top: position.bottom + 10 + window.scrollY,
+    };
+    console.log(window.scrollX);
+    setRatingBoxLocation(coordinates);
+  };
 
   const toggleSeeMoreCast = () => {
     setIsCastExtended((prev) => !prev);
+  };
+
+  const handleAddToWatchlist = () => {
+    addToWatchlist(single_title);
+    postWatchlistToApi(title_media_type!, Number(title_id!), true);
+  };
+
+  const handleRemoveFromWatchlist = () => {
+    removeFromWatchList(single_title);
+    postWatchlistToApi(title_media_type!, Number(title_id!), false);
   };
 
   useEffect(() => {
@@ -81,6 +123,10 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
       setCastList(cast_list.slice(0, 5));
     }
   }, [isCastExtended]);
+
+  useEffect(() => {
+    handleMediaType(first_air_date ? "tv" : "movie");
+  }, []);
 
   if (single_title_loading) {
     return <Loading />;
@@ -149,17 +195,21 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
                   onClick={() => {
                     user_watch_list.some((title) => {
                       return (
-                        JSON.stringify(title) === JSON.stringify(single_title)
+                        // JSON.stringify(title) === JSON.stringify(single_title)
+                        title.id === single_title.id &&
+                        title.poster_path === single_title.poster_path
                       );
                     })
-                      ? removeFromWatchList(single_title)
-                      : addToWatchlist(single_title);
+                      ? handleRemoveFromWatchlist()
+                      : handleAddToWatchlist();
                   }}
                   className="flex justify-center items-center rounded-full w-12 h-12 text-white bg-transparent border-[1px] border-light-grey hover:backdrop-brightness-200 hover:border-white"
                 >
                   {user_watch_list.some((title) => {
                     return (
-                      JSON.stringify(title) === JSON.stringify(single_title)
+                      // JSON.stringify(title) === JSON.stringify(single_title)
+                      title.id === single_title.id &&
+                      title.poster_path === single_title.poster_path
                     );
                   }) ? (
                     <Icon
@@ -173,7 +223,19 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
                     />
                   )}
                 </button>
-                <button className="flex justify-center items-center rounded-full w-12 h-12 text-white bg-transparent border-[1px] border-light-grey hover:backdrop-brightness-200 hover:border-white">
+                <button
+                  onClick={handleClick}
+                  className="flex justify-center items-center rounded-full w-12 h-12 text-white bg-transparent border-[1px] border-light-grey hover:backdrop-brightness-200 hover:border-white"
+                >
+                  <Icon
+                    icon="ion:star-outline"
+                    className="w-6 h-6 text-white m-auto"
+                  />
+                </button>
+                <button
+                  onClick={() => setShowTrailer(true)}
+                  className="flex justify-center items-center rounded-full w-12 h-12 text-white bg-transparent border-[1px] border-light-grey hover:backdrop-brightness-200 hover:border-white"
+                >
                   <Icon
                     icon="ion:play-outline"
                     className="w-6 h-6 text-white m-auto"
@@ -301,6 +363,8 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
         </div>
       </div>
       <ReviewModal />
+      <TrailerModal showTrailer={showTrailer} setShowTrailer={setShowTrailer} />
+      <RatingBox ratingBoxLocation={ratingBoxLocation} />
     </main>
   );
 };
