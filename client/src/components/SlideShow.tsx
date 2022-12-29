@@ -12,7 +12,7 @@ interface Movie {
 }
 
 const SlideShow: React.FC<SlideShowProps> = ({}) => {
-  const { latest_loading, latest_list, latest_error } =
+  const { latest_loading, latest_list, latest_error, handleMediaType } =
     React.useContext(MoviesContext)!;
 
   const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -66,7 +66,19 @@ const SlideShow: React.FC<SlideShowProps> = ({}) => {
       <div className="flex flex-row transition-transform" ref={slideShowRef}>
         {latest_list.map((movie, index) => {
           return (
-            <div key={index} className="flex min-w-full min-h-full">
+            <div
+              key={index}
+              className="flex min-w-full min-h-full"
+              onClick={() => {
+                handleMediaType(
+                  movie.media_type
+                    ? movie.media_type
+                    : movie.first_air_date
+                    ? "tv"
+                    : "movie"
+                );
+              }}
+            >
               <Link to={`/title/${movie.id}`}>
                 <img
                   src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
