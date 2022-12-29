@@ -5,12 +5,16 @@ interface StarRatingProps {
   starCount: string;
   rating: number;
   handleRating: (rating: number) => void;
+  size?: string;
+  gap?: string;
 }
 
 const StarRating: React.FC<StarRatingProps> = ({
   starCount,
   rating,
   handleRating,
+  size,
+  gap,
 }) => {
   const createStarArray = (count: number): number[] => {
     return Array(count)
@@ -25,9 +29,15 @@ const StarRating: React.FC<StarRatingProps> = ({
     setStars(createStarArray(Number(starCount)));
   }, [starCount, rating, fillStar]);
 
+  useEffect(() => {
+    setFillStar(Number(rating));
+  }, [rating]);
+
   return (
     <div
-      className="flex flex-row justify-center items-between gap-4"
+      className={`flex flex-row justify-center items-between ${
+        gap ? `gap-${gap}` : "gap-4"
+      }`}
       onMouseLeave={() => setFillStar(rating)}
     >
       {stars.map((id) => {
@@ -35,9 +45,9 @@ const StarRating: React.FC<StarRatingProps> = ({
           <Icon
             key={id}
             icon="bi:star-fill"
-            className={`w-8 h-8 text-light-grey ${
-              id <= fillStar && "text-yellow-400"
-            }`}
+            className={`${
+              size ? `w-${size} h-${size}` : "w-8 h-8"
+            } text-light-grey ${id <= fillStar && "text-yellow-400"}`}
             onClick={() => {
               setFillStar(id);
               handleRating(id);
