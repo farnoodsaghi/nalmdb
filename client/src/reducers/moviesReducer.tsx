@@ -54,13 +54,9 @@ import {
   TITLE_TRAILER_SUCCESS,
   TITLE_TRAILER_ERROR,
   SET_RATING_BOX,
-  SET_TITLE_RATING,
-  LOAD_RATED_MOVIES_START,
-  LOAD_RATED_MOVIES_SUCCESS,
-  LOAD_RATED_MOVIES_ERROR,
-  LOAD_RATED_TV_START,
-  LOAD_RATED_TV_SUCCESS,
-  LOAD_RATED_TV_ERROR,
+  LOAD_RATING_HISTORY_START,
+  LOAD_RATING_HISTORY_SUCCESS,
+  LOAD_RATING_HISTORY_ERROR,
 } from "../actions";
 
 interface Action {
@@ -125,17 +121,13 @@ export interface State {
   review_form: ReviewForm;
   review_list: any[];
   current_title_reviews: any;
-  current_rating: number;
   rating_box_open: boolean;
   title_trailer_loading: boolean;
   title_trailer_error: boolean;
   title_trailer: any;
-  rated_movies_loading: boolean;
-  rated_movies_list: any[];
-  rated_movies_error: boolean;
-  rated_tv_loading: boolean;
-  rated_tv_list: any[];
-  rated_tv_error: boolean;
+  rating_history_loading: boolean;
+  rating_history: number;
+  rating_history_error: boolean;
 }
 
 interface ReviewForm {
@@ -452,43 +444,28 @@ const reducer = (state: State, action: Action) => {
   if (action.type === SET_RATING_BOX) {
     return { ...state, rating_box_open: action.payload };
   }
-  if (action.type === SET_TITLE_RATING) {
-    return { ...state, current_rating: action.payload };
+  if (action.type === LOAD_RATING_HISTORY_START) {
+    return { ...state, rating_history_loading: true };
   }
-  if (action.type === LOAD_RATED_MOVIES_START) {
-    return { ...state, rated_movies_loading: true };
-  }
-  if (action.type === LOAD_RATED_MOVIES_SUCCESS) {
+  if (action.type === LOAD_RATING_HISTORY_SUCCESS) {
+    const history = action.payload.filter(
+      (title: any) => title.id === Number(state.title_id)
+    );
+    console.log(history);
     return {
       ...state,
-      rated_movies_loading: false,
-      rated_movies_list: action.payload,
+      rating_history_loading: false,
+      rating_history: history.length > 0 ? history[0].rating / 2 : 0,
     };
   }
-  if (action.type === LOAD_RATED_MOVIES_ERROR) {
+  if (action.type === LOAD_RATING_HISTORY_ERROR) {
     return {
       ...state,
-      rated_movies_loading: false,
-      rated_movies_error: true,
+      rating_history_loading: false,
+      rating_history_error: true,
     };
   }
-  if (action.type === LOAD_RATED_TV_START) {
-    return { ...state, rated_tv_loading: true };
-  }
-  if (action.type === LOAD_RATED_TV_SUCCESS) {
-    return {
-      ...state,
-      rated_tv_loading: false,
-      rated_tv_list: action.payload,
-    };
-  }
-  if (action.type === LOAD_RATED_TV_ERROR) {
-    return {
-      ...state,
-      rated_tv_loading: false,
-      rated_tv_error: true,
-    };
-  }
+
   throw Error("Invalid action type");
 };
 
