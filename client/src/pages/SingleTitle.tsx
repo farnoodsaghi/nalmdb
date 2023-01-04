@@ -80,6 +80,7 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
   const [ratingBoxLocation, setRatingBoxLocation] = useState<RatingBoxLocation>(
     {}
   );
+  const [didMount, setDidMount] = useState<boolean>(false);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     handleRatingBox(true);
@@ -110,6 +111,7 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
 
   useEffect(() => {
     handleTitleId(id!);
+    handleMediaType(localStorage.getItem("media_type"));
   }, [id]);
 
   useEffect(() => {
@@ -125,8 +127,12 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
   }, [isCastExtended]);
 
   useEffect(() => {
-    handleMediaType(first_air_date ? "tv" : "movie");
-  }, []);
+    if (!didMount) {
+      setDidMount(true);
+    } else {
+      handleMediaType(first_air_date ? "tv" : "movie");
+    }
+  }, [single_title]);
 
   if (single_title_loading) {
     return <Loading />;

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
+import { MoviesContext } from "../context/moviesContext";
 
 interface StarRatingProps {
   starCount: string;
@@ -23,15 +24,16 @@ const StarRating: React.FC<StarRatingProps> = ({
   };
   const [stars, setStars] = useState<number[]>([]);
   const [fillStar, setFillStar] = useState<number>(0);
-  // const [rating, setRating] = useState<number>(Number(rating));
+  const { rating_history, rating_history_loading, title_id } =
+    React.useContext(MoviesContext)!;
 
   useEffect(() => {
     setStars(createStarArray(Number(starCount)));
-  }, [starCount, rating, fillStar]);
+  }, []);
 
   useEffect(() => {
-    setFillStar(Number(rating));
-  }, [rating]);
+    setFillStar(Number(rating_history));
+  }, [rating_history]);
 
   return (
     <div
@@ -49,7 +51,7 @@ const StarRating: React.FC<StarRatingProps> = ({
               size ? `w-${size} h-${size}` : "w-8 h-8"
             } text-light-grey ${id <= fillStar && "text-yellow-400"}`}
             onClick={() => {
-              setFillStar(id);
+              // setFillStar(id);
               handleRating(id);
             }}
             onMouseEnter={() => setFillStar(id)}
