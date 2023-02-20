@@ -57,6 +57,7 @@ import {
   LOAD_RATING_HISTORY_START,
   LOAD_RATING_HISTORY_SUCCESS,
   LOAD_RATING_HISTORY_ERROR,
+  SET_MOBILE_SIDEBAR,
 } from "../actions";
 
 interface Action {
@@ -128,6 +129,7 @@ export interface State {
   rating_history_loading: boolean;
   rating_history: number;
   rating_history_error: boolean;
+  is_sidebar_open: boolean;
 }
 
 interface ReviewForm {
@@ -464,6 +466,9 @@ const reducer = (state: State, action: Action) => {
       rating_history_loading: false,
       rating_history_error: true,
     };
+  }
+  if (action.type === SET_MOBILE_SIDEBAR) {
+    return { ...state, is_sidebar_open: action.payload };
   }
 
   throw Error("Invalid action type");

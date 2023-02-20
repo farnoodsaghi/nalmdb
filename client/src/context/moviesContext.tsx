@@ -66,6 +66,7 @@ import {
   LOAD_RATING_HISTORY_START,
   LOAD_RATING_HISTORY_SUCCESS,
   LOAD_RATING_HISTORY_ERROR,
+  SET_MOBILE_SIDEBAR,
 } from "../actions";
 import axios from "../axios";
 import requests from "../requests";
@@ -85,6 +86,7 @@ interface MoviesContextProps extends State {
   getTitleTrailer: () => void;
   handleRatingBox: (isOpen: boolean) => void;
   submitTitleRating: (rating: number) => void;
+  handleSidebarOnMobile: (isOpen: boolean) => void;
 }
 
 const MoviesContext = React.createContext<MoviesContextProps | null>(null);
@@ -157,6 +159,7 @@ const initialState = {
   // rating_history: [],
   rating_history: 0,
   rating_history_error: false,
+  is_sidebar_open: false,
 };
 
 const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
@@ -204,6 +207,10 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
 
   const handleReviewStarRating = (rating: number): void => {
     dispatch({ type: SET_REVIEW_STAR_RATING, payload: rating });
+  };
+
+  const handleSidebarOnMobile = (isOpen: boolean) => {
+    dispatch({ type: SET_MOBILE_SIDEBAR, payload: isOpen });
   };
 
   const fetchLatest = async (): Promise<void> => {
@@ -586,6 +593,7 @@ const MoviesProvider: React.FC<MoviesProviderProps> = ({ children }) => {
         getTitleTrailer,
         handleRatingBox,
         submitTitleRating,
+        handleSidebarOnMobile,
       }}
     >
       {children}
