@@ -10,7 +10,7 @@ npm install
 
 ---
 
-### Then run the server on `http://localhost:3000` with the following command:
+### Then run the app on `http://localhost:3000` with the following command:
 ```
 npm start
 ```
