@@ -8,6 +8,7 @@ interface StarRatingProps {
   handleRating: (rating: number) => void;
   size?: string;
   gap?: string;
+  enableHistory?: boolean | undefined;
 }
 
 const StarRating: React.FC<StarRatingProps> = ({
@@ -16,6 +17,7 @@ const StarRating: React.FC<StarRatingProps> = ({
   handleRating,
   size,
   gap,
+  enableHistory,
 }) => {
   const createStarArray = (count: number): number[] => {
     return Array(count)
@@ -32,8 +34,10 @@ const StarRating: React.FC<StarRatingProps> = ({
   }, []);
 
   useEffect(() => {
-    setFillStar(Number(rating_history));
-  }, [rating_history]);
+    if (enableHistory) {
+      setFillStar(Number(rating_history));
+    }
+  }, [rating_history, enableHistory]);
 
   return (
     <div

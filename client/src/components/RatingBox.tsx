@@ -61,6 +61,7 @@ const RatingBox: React.FC<RatingBoxProps> = ({ ratingBoxLocation }) => {
           handleRating={submitTitleRating}
           size="2"
           gap="2"
+          enableHistory={true}
         />
       )}
     </div>
