@@ -108,7 +108,7 @@ const SlideShow: React.FC<SlideShowProps> = ({}) => {
           className="w-5 h-5 text-white m-auto"
         />
       </button>
-      <div className="flex flex-col w-3/5 absolute bottom-14 left-20 whitespace-normal">
+      <div className="flex flex-col w-3/5 absolute bottom-14 xl:left-20 left-10 whitespace-normal">
         <h3 className="text-white font-sarabun text-5xl font-semibold drop-shadow-xl text-shadow-lg">
           {current?.title || current?.name}
         </h3>

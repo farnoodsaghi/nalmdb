@@ -19,15 +19,17 @@ const SideBarListItem: React.FC<SideBarListItemProps> = ({
   return (
     <span
       onClick={() => handleActiveSideBar(id)}
-      className="flex flex-row justify-start items-end gap-2 ml-8 mt-2 font-sarabun font-lg font-normal text-light-grey leading-tight hover:text-white cursor-pointer"
+      className="flex flex-row md:justify-center lg:justify-start items-end gap-2 lg:ml-8 mt-2 font-sarabun font-lg font-normal text-light-grey leading-tight hover:text-white cursor-pointer"
     >
       <Icon
         icon={icon}
-        className={`w-5 h-5 ${activeId === id && "text-royal-purple"}`}
+        className={`lg:w-5 lg:h-5 md:w-7 md:h-7 ${
+          activeId === id && "text-royal-purple"
+        }`}
       />
-      <h3>{name}</h3>
+      <h3 className="md:hidden lg:inline">{name}</h3>
       {activeId === id && (
-        <span className="ml-auto bg-royal-purple w-1 h-5 rounded-l-md"></span>
+        <span className="md:hidden lg:inline ml-auto bg-royal-purple w-1 h-5 rounded-l-md"></span>
       )}
     </span>
   );
