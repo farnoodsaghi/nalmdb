@@ -11,7 +11,7 @@ const Home: React.FC<HomeProps> = ({}) => {
     return <SearchResults />;
   }
   return (
-    <main className="block bg-carbon-black ml-1/6f h-full w-5/6 mt-24 mb-6">
+    <main className="block bg-carbon-black md:ml-[5.25rem] lg:ml-1/6f h-full lg:w-5/6 md:w-[calc(100%-5.25rem)] mt-24 mb-6">
       <SlideShow />
       <MovieSliderBox title="Trending Now" type="trending" />
       <MovieSliderBox title="Top Rated" type="top_rated" />

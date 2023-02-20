@@ -149,7 +149,7 @@ const SingleTitle: React.FC<SingleTitleProps> = ({}) => {
         <div className="bottom-fade w-full h-36 absolute bottom-0">
           <div className="flex flex-row gap-16 mx-16 justify-start">
             <div className="flex flex-col w-1/4 justify-start items-start">
-              <div className="flex justify-center w-[18rem] items-center bg-dark-grey rounded-md cursor-pointer hover:brightness-75 aspect-[1/1.5]">
+              <div className="flex justify-center xl:w-[18rem] lg:w-[16rem] items-center bg-dark-grey rounded-md cursor-pointer hover:brightness-75 aspect-[1/1.5]">
                 <img
                   className="aspect-[1/1.5] rounded-md"
                   src={`https://image.tmdb.org/t/p/original/${poster_path}`}

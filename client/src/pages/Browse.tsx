@@ -19,7 +19,7 @@ const Browse: React.FC<BrowseProps> = ({}) => {
     return <Loading />;
   }
   return (
-    <main className="h-full ml-1/6f w-5/6 mt-24 mb-6 bg-carbon-black">
+    <main className="h-full md:ml-[5.25rem] md:w-[calc(100%-5.25rem)] lg:ml-1/6f lg:w-5/6 mt-24 mb-6 bg-carbon-black">
       <div className="flex flex-row justify-between items-center mx-12 mb-6">
         <div className="flex flex-row justify-start items-baseline gap-2">
           <h5 className="font-dosis uppercase text-xs font-semibold text-light-grey">
