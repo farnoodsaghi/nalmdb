@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import defaultProfile from "../assets/default_profile_path.png";
 import { UserContext } from "../context/userContext";
+import axios from "../axios";
 
 interface ReviewPreviewProps {
   rating: number;
@@ -9,6 +10,8 @@ interface ReviewPreviewProps {
   content: string;
   review_id: string;
   user_avatar: string;
+  media_id: string;
+  media_type: string;
 }
 interface SubmenuLocation {
   left?: number;
@@ -21,6 +24,8 @@ const ReviewPreview: React.FC<ReviewPreviewProps> = ({
   user_name,
   user_avatar,
   review_id,
+  media_type,
+  media_id,
 }) => {
   const [stars, setStars] = useState<number[]>(
     new Array(5).fill(0).map((_, index) => index + 1)
@@ -30,6 +35,26 @@ const ReviewPreview: React.FC<ReviewPreviewProps> = ({
   const [isSubmenuOpen, setIsSubmenuOpen] = useState<Boolean>(false);
   const [submenuLocation, setSubmenuLocation] = useState<SubmenuLocation>({});
   const { removeFromReviewList } = React.useContext(UserContext)!;
+  const [singleTitleLoading, setSingleTitleLoading] = useState(true);
+  const [singleTitle, setSingleTitle] = useState<any>({});
+
+  const fetchSingleTitleById = async (id: string, mediaType: string) => {
+    setSingleTitleLoading(true);
+    try {
+      const response = await axios.get(
+        `/${mediaType}/${id}?api_key=${process.env.REACT_APP_MOVIE_API_KEY}&language=en-US`
+      );
+      setSingleTitle(response!.data);
+      setSingleTitleLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchSingleTitleById(media_id, media_type);
+    console.log(singleTitle);
+  }, []);
 
   useEffect(() => {
     const { left, top } = submenuLocation;
@@ -87,7 +112,7 @@ const ReviewPreview: React.FC<ReviewPreviewProps> = ({
       </div>
       <div className="flex flex-row justify-center items-center gap-2 col-span-2">
         <img
-          src={`https://img.fruugo.com/product/9/75/101193759_max.jpg`}
+          src={`https://image.tmdb.org/t/p/original/${singleTitle.poster_path}`}
           alt="movie-poster"
           className="w-10 aspect-[1:1.33] rounded"
         />
